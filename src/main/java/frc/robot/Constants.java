@@ -39,6 +39,10 @@ public final class Constants
     // Hold time on motor brakes when disabled
     public static final double WHEEL_LOCK_TIME = 10; // seconds
   }
+  public static final class CAN_ID {
+    public static final int LEFT_ELEVATOR = 20;
+    public static final int RIGHT_ELEVATOR = 21;
+  }
 
   public static class OperatorConstants
   {
