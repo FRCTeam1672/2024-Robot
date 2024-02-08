@@ -117,7 +117,7 @@ public class SwerveSubsystem extends SubsystemBase
           return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
         },
         this // Reference to this subsystem to set requirements
-                                  );
+      );
   }
 
   /**
@@ -136,7 +136,6 @@ public class SwerveSubsystem extends SubsystemBase
     {
       resetOdometry(new Pose2d(path.getPoint(0).position, getHeading()));
     }
-
     // Create a path following command using AutoBuilder. This will also trigger event markers.
     return AutoBuilder.followPath(path);
   }
@@ -161,6 +160,7 @@ public class SwerveSubsystem extends SubsystemBase
         0.0, // Goal end velocity in meters/sec
         0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
                                      );
+                                    
   }
 
   /**
@@ -463,7 +463,7 @@ public class SwerveSubsystem extends SubsystemBase
   }
 
   /**
-   * Add a fake vision reading for testing purposes.
+   * Add a vision reading for testing purposes.
    */
   public void addVisionReading(Pose2d pose, double timestamp)
   {

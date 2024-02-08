@@ -25,7 +25,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   private PIDController elevatorController = new PIDController(0.1, 0, 0);
 
   public ElevatorSubsystem() {
-    left.follow(right);
+    right.follow(left);
     left.setIdleMode(IdleMode.kBrake);
     right.setIdleMode(IdleMode.kBrake);
   }
