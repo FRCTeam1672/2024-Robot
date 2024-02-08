@@ -60,15 +60,15 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // driverXbox.x().onTrue(new InstantCommand(drivebase::addFakeVisionReading));
-    driverXbox.a().whileTrue(new InstantCommand(drivebase::lock, drivebase));
-    driverXbox.x().onTrue(new InstantCommand(drivebase::zeroGyro, drivebase));
+    driverXbox.a().onTrue(new InstantCommand(drivebase::lock, drivebase));
+    driverXbox.x().onTrue(new InstantCommand(drivebase::zeroGyro, drivebase).ignoringDisable(true));
     driverXbox.b().onTrue(new InstantCommand(() -> {
       drivebase.resetOdometry(new Pose2d());
     }, drivebase));
     // SmartDashboard.putData("Push Encoder Values", new InstantCommand(() -> {
     // drivebase.pushOffsetsToControllers();
     // }));
-    SmartDashboard.putData("Zero Gyro", new InstantCommand(drivebase::zeroGyro));
+    SmartDashboard.putData("Zero Gyro", new InstantCommand(drivebase::zeroGyro).ignoringDisable(true));
 
     // new JoystickButton(driverXbox, driverXbox).onTrue((new
     // InstantCommand(drivebase::zeroGyro)));
