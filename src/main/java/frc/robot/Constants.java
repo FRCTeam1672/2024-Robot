@@ -39,8 +39,29 @@ public final class Constants
     // Hold time on motor brakes when disabled
     public static final double WHEEL_LOCK_TIME = 10; // seconds
   }
+  public static final class Intake {
+    public static final double AMP_OUTTAKE_SPEED = 0.2;
+    public static final double INTAKE_SPEED = -0.1;
+    public static final double SHOOT_SPEED = 1;
+    public static final int OUTTAKE_VELOCITY = 10;
+    public static final int SHOOT_VELOCITY = 10;
+  }
+  /**
+   * This class is for aiming. 
+   */
+  public static final class Aim { 
+    public static final int WristAngleAmp = 120;
+    public static final int WristAngleSpeaker = 120;
+    public static final int ElevatorHeightAmp = 1;
+    public static final int ElevatorHeightSpeaker = 1000000;
+    
+  }
 
-  public static class OperatorConstants
+  public static final class Elevator {
+    public static final double HOMESPEED = -0.5;
+  }
+
+  public static final class OperatorConstants
   {
 
     // Joystick Deadband
