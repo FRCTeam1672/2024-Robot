@@ -41,6 +41,7 @@ public final class Constants
   }
   public static final class Intake {
     public static final double AMP_OUTTAKE_SPEED = 0.2;
+    // its not about speed its about power (speed = power)
     public static final double INTAKE_SPEED = -0.1;
     public static final double SHOOT_SPEED = 1;
     public static final int OUTTAKE_VELOCITY = 10;
@@ -50,15 +51,15 @@ public final class Constants
    * This class is for aiming. 
    */
   public static final class Aim { 
-    public static final int WristAngleAmp = 120;
-    public static final int WristAngleSpeaker = 120;
-    public static final int ElevatorHeightAmp = 1;
-    public static final int ElevatorHeightSpeaker = 1000000;
-    
+    public static final int WRIST_ANGLE_AMP = 120;
+    public static final int WRIST_ANGLE_SPAKER = 120;
+    public static final int ELEVATOR_HEIGHT_AMP = 1;
+    public static final int ELEVATOR_HEIGHT_SPEAKER = 1000000;
+    public static final double AMP_AIM_SPEED = 0.3;
   }
 
   public static final class Elevator {
-    public static final double HOMESPEED = -0.5;
+    public static final double HOME_SPEED = -0.5;
   }
 
   public static final class OperatorConstants

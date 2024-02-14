@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,6 +31,28 @@ public class ArmSubsystem extends SubsystemBase {
   private PIDController wristPidController = new PIDController(0.01, 0, 0);
   private PIDController elevatorPidController = new PIDController(0.01, 0, 0);
 
+  /** Creates a new ArmSubsystem. */
+  public ArmSubsystem() {
+    rElevator.follow(lElevator);
+    rElevator.setInverted(true);
+    rShooter.follow(lShooter);
+    rShooter.setInverted(true);
+    rFeeder.follow(lFeeder);
+    rFeeder.setInverted(true);
+
+  }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber("LShooter Velocity", lShooter.getEncoder().getVelocity());
+    SmartDashboard.putNumber("RShooter Velocity", rShooter.getEncoder().getVelocity());
+    SmartDashboard.putNumber("LIntake Velocity", lFeeder.getEncoder().getVelocity());
+    SmartDashboard.putNumber("RIntake Velocity", rFeeder.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Wrist Angle", wrist.getEncoder().getPosition());
+    SmartDashboard.putNumber("rElevator Height", rElevator.getEncoder().getPosition());
+    SmartDashboard.putNumber("lElevator Height", lElevator.getEncoder().getPosition());
+  }
+
   //stop everything
   public Command stopEverything() {
     return Commands.runOnce(() -> {
@@ -49,7 +72,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   public Command homeElevator() {
     return Commands.run(() -> {
-      lElevator.set(Constants.Elevator.HOMESPEED);
+      lElevator.set(Constants.Elevator.HOME_SPEED);
     }).until(() -> {
       return isHomed();
     });
@@ -70,7 +93,6 @@ public class ArmSubsystem extends SubsystemBase {
       lShooter.set(Constants.Intake.SHOOT_SPEED);
     }).until(() -> {
       return lShooter.getEncoder().getVelocity() < Constants.Intake.SHOOT_VELOCITY;
-      // TODO get this actual max value of motors
     }).andThen(Commands.run(() -> {
       lFeeder.set(Constants.Intake.SHOOT_SPEED);
     }));
@@ -80,7 +102,6 @@ public class ArmSubsystem extends SubsystemBase {
     return Commands.run(() -> {
       // spin outer wheels to 10 power
       lShooter.set(Constants.Intake.AMP_OUTTAKE_SPEED);
-      // TODO get the actual values
     }).until(() -> {
       return lShooter.getEncoder().getVelocity() < Constants.Intake.OUTTAKE_VELOCITY;
       // TODO change this value
@@ -93,8 +114,7 @@ public class ArmSubsystem extends SubsystemBase {
     elevatorPidController.setSetpoint(pos);
     return Commands.run(() -> {
       // negative for clockwise
-      lElevator.set(MathUtil.clamp(elevatorPidController.calculate(lElevator.getEncoder().getPosition()), -0.1, 0.1)); //TODO make these constants
-      //TODO do MathUtil.clamp() for all PID controllers
+      lElevator.set(MathUtil.clamp(elevatorPidController.calculate(lElevator.getEncoder().getPosition()), Constants.Elevator.HOME_SPEED, -Constants.Elevator.HOME_SPEED));
     }).until(() -> {
       return elevatorPidController.atSetpoint();
     }).andThen(stopEverything());
@@ -106,11 +126,10 @@ public class ArmSubsystem extends SubsystemBase {
    * @return the command to move the wrist
    */
   public Command moveWristTo(int pos) {
-    //TODO put postion
     wristPidController.setSetpoint(pos);
 
     return Commands.run(() -> {
-      wrist.set(wristPidController.calculate(wrist.getEncoder().getPosition()));
+      wrist.set(MathUtil.clamp(wristPidController.calculate(wrist.getEncoder().getPosition()), -Constants.Aim.AMP_AIM_SPEED, Constants.Aim.AMP_AIM_SPEED));
     }).until(() -> {
       return wristPidController.atSetpoint();
     }).andThen(Commands.runOnce(() -> {
@@ -119,18 +138,18 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public Command scoreAmp() {
-    return  moveWristTo(Constants.Aim.WristAngleAmp).
-            alongWith(moveElevatorTo(Constants.Aim.ElevatorHeightAmp)).
+    return  moveWristTo(Constants.Aim.WRIST_ANGLE_AMP).
+            alongWith(moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_AMP)).
             andThen(outtake()).
-            andThen(new WaitCommand(2)).
+            andThen(new WaitCommand(1)).
             andThen(stopEverything()).
             andThen(homeElevator()).
             alongWith(moveWristTo(0));
   }
 
   public Command scoreSpeaker() {
-    return  moveWristTo(Constants.Aim.WristAngleSpeaker).
-            alongWith(moveElevatorTo(Constants.Aim.ElevatorHeightSpeaker)).
+    return  moveWristTo(Constants.Aim.WRIST_ANGLE_SPAKER).
+            alongWith(moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SPEAKER)).
             andThen(shoot()).
             andThen(new WaitCommand(2)).
             andThen(stopEverything()).
@@ -138,19 +157,4 @@ public class ArmSubsystem extends SubsystemBase {
             alongWith(moveWristTo(0));
   }
   
-  /** Creates a new ArmSubsystem. */
-  public ArmSubsystem() {
-    rElevator.follow(lElevator);
-    rElevator.setInverted(true);
-    rShooter.follow(lShooter);
-    rShooter.setInverted(true);
-    rFeeder.follow(lFeeder);
-    rFeeder.setInverted(true);
-
-  }
-
-  @Override
-  public void periodic() {
-
-  }
 }

@@ -8,21 +8,25 @@ import java.io.File;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class RobotContainer {
   private final SwerveSubsystem drivebase = new SwerveSubsystem(
       new File(Filesystem.getDeployDirectory(), "swerve/neo"));
-  CommandXboxController driverXbox = new CommandXboxController(0);
-
+  private final CommandXboxController driverXbox = new CommandXboxController(0);
+  private final ArmSubsystem arm = new ArmSubsystem();
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -45,23 +49,14 @@ public class RobotContainer {
     // drivebase.setDefaultCommand(closedAbsoluteDrive);
   }
   private void configureBindings() {
-    // driverXbox.x().onTrue(new InstantCommand(drivebase::addFakeVisionReading));
     driverXbox.a().onTrue(new InstantCommand(drivebase::lock, drivebase));
     driverXbox.x().onTrue(new InstantCommand(drivebase::zeroGyro, drivebase).ignoringDisable(true));
-    driverXbox.b().onTrue(new InstantCommand(() -> {
-      drivebase.resetOdometry(new Pose2d());
-    }, drivebase));
-    // SmartDashboard.putData("Push Encoder Values", new InstantCommand(() -> {
-    // drivebase.pushOffsetsToControllers();
-    // }));
-    SmartDashboard.putData("Zero Gyro", new InstantCommand(drivebase::zeroGyro).ignoringDisable(true));
-
-    // new JoystickButton(driverXbox, driverXbox).onTrue((new
-    // InstantCommand(drivebase::zeroGyro)));
-    // new JoystickButton(driverXbox, 3).onTrue(new
-    // InstantCommand(drivebase::addFakeVisionReading));
-    // new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new
-    // InstantCommand(drivebase::lock, drivebase)));
+    driverXbox.povDown().onTrue(drivebase.driveToPose(new Pose2d(1.89, 7.67, new Rotation2d(Math.toRadians(90)))).
+                                andThen(arm.scoreAmp()));
+    driverXbox.povUp().onTrue(drivebase.driveToPose(new Pose2d(15.47, 0.89, new Rotation2d(Math.toRadians(-60)))).
+                              andThen(arm.intake()).
+                              andThen(new WaitCommand(5)).
+                              andThen(arm.stopEverything()));
   }
 
   /**
