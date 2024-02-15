@@ -39,9 +39,9 @@ public class RobotContainer {
     // left stick controls translation
     // right stick controls the angular velocity of the robot
     Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
-        () -> MathUtil.clamp(MathUtil.applyDeadband(-driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1,
+        () -> MathUtil.clamp(MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1,
             1),
-        () -> MathUtil.clamp(MathUtil.applyDeadband(-driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1,
+        () -> MathUtil.clamp(MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1,
             1),
         () -> -driverXbox.getRightX());
 
@@ -51,12 +51,24 @@ public class RobotContainer {
   private void configureBindings() {
     driverXbox.a().onTrue(new InstantCommand(drivebase::lock, drivebase));
     driverXbox.x().onTrue(new InstantCommand(drivebase::zeroGyro, drivebase).ignoringDisable(true));
-    driverXbox.povDown().onTrue(drivebase.driveToPose(new Pose2d(1.89, 7.67, new Rotation2d(Math.toRadians(90)))).
-                                andThen(arm.scoreAmp()));
-    driverXbox.povUp().onTrue(drivebase.driveToPose(new Pose2d(15.47, 0.89, new Rotation2d(Math.toRadians(-60)))).
-                              andThen(arm.intake()).
-                              andThen(new WaitCommand(5)).
-                              andThen(arm.stopEverything()));
+    // driverXbox.povDown().onTrue(drivebase.driveToPose(new Pose2d(1.89, 7.67, new Rotation2d(Math.toRadians(90)))).
+    //                             andThen(arm.scoreAmp()));
+    // driverXbox.povUp().onTrue(drivebase.driveToPose(new Pose2d(15.47, 0.89, new Rotation2d(Math.toRadians(-60)))).
+    //                           andThen(arm.intake()).
+    //                           andThen(new WaitCommand(5)).
+    //                           andThen(arm.stopEverything()));
+
+
+    driverXbox.povDown().whileTrue(arm.intake()).onFalse(Commands.run(arm::stopEverything));
+    driverXbox.povUp().whileTrue(arm.outtake()).onFalse(Commands.run(arm::stopEverything));
+    driverXbox.rightTrigger().whileTrue(arm.dumshoot()).onFalse(Commands.run(arm::stopEverything));
+    driverXbox.leftTrigger().whileTrue(arm.dumamp()).onFalse(Commands.run(arm::stopEverything));
+    driverXbox.leftBumper().whileTrue(arm.goSlowDown()).onFalse(Commands.run(arm::stopEverything));
+    driverXbox.rightBumper().whileTrue(arm.goSlowUp());
+
+        driverXbox.y().whileTrue(arm.dumbExtendElevator()).onFalse(Commands.run(arm::stopEverything));
+    driverXbox.a().whileTrue(arm.dumbRetractElevator()).onFalse(Commands.run(arm::stopEverything));
+
   }
 
   /**

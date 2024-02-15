@@ -56,6 +56,7 @@ public final class Constants
     public static final int ELEVATOR_HEIGHT_AMP = 1;
     public static final int ELEVATOR_HEIGHT_SPEAKER = 1000000;
     public static final double AMP_AIM_SPEED = 0.3;
+    public static final double SLOW_PRECISION_SPEED = -0.1;
   }
 
   public static final class Elevator {

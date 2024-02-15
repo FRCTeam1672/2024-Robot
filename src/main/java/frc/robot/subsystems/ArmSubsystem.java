@@ -18,13 +18,13 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 
 public class ArmSubsystem extends SubsystemBase {
-  private CANSparkMax lElevator = new CANSparkMax(12832, MotorType.kBrushless);
-  private CANSparkMax rElevator = new CANSparkMax(1000, MotorType.kBrushless);
-  private CANSparkMax lShooter = new CANSparkMax(1001, MotorType.kBrushless);
-  private CANSparkMax rShooter = new CANSparkMax(1002, MotorType.kBrushless);
-  private CANSparkMax lFeeder = new CANSparkMax(100202, MotorType.kBrushless);
-  private CANSparkMax rFeeder = new CANSparkMax(100102, MotorType.kBrushless);
-  private CANSparkMax wrist = new CANSparkMax(100702, MotorType.kBrushless);
+  private CANSparkMax lElevator = new CANSparkMax(31, MotorType.kBrushless);
+  private CANSparkMax rElevator = new CANSparkMax(32, MotorType.kBrushless);
+  private CANSparkMax lShooter = new CANSparkMax(41, MotorType.kBrushless);
+  private CANSparkMax rShooter = new CANSparkMax(42, MotorType.kBrushless);
+  private CANSparkMax lFeeder = new CANSparkMax(43, MotorType.kBrushless);
+  private CANSparkMax rFeeder = new CANSparkMax(44, MotorType.kBrushless);
+  private CANSparkMax wrist = new CANSparkMax(50, MotorType.kBrushless);
 
   private DigitalInput limitSwitch = new DigitalInput(0);
 
@@ -65,6 +65,15 @@ public class ArmSubsystem extends SubsystemBase {
       wrist.stopMotor();
     });
   }
+  public void stopEverythingMethod() {
+    lElevator.stopMotor();
+      rElevator.stopMotor();
+      lShooter.stopMotor();
+      rShooter.stopMotor();
+      lFeeder.stopMotor();
+      rFeeder.stopMotor();
+      wrist.stopMotor();
+  }
 
   public boolean isHomed() {
     return limitSwitch.get();
@@ -78,13 +87,23 @@ public class ArmSubsystem extends SubsystemBase {
     });
   }
 
-  
+  public Command goSlowUp() {
+    return Commands.run(() -> {
+      wrist.set(Constants.Aim.SLOW_PRECISION_SPEED);
+    }).handleInterrupt(() -> {stopEverythingMethod();});
+  }
+
+  public Command goSlowDown() {
+    return Commands.run(() -> {
+      wrist.set(-Constants.Aim.SLOW_PRECISION_SPEED);
+    }).handleInterrupt(() -> {stopEverythingMethod();});
+  }
 
   public Command intake() {
     return Commands.run(() -> {
       lShooter.set(Constants.Intake.INTAKE_SPEED); // negative is clockwise
       lFeeder.set(Constants.Intake.INTAKE_SPEED);
-    });
+    }).handleInterrupt(this::stopEverythingMethod);
   }
 
   public Command shoot() {
@@ -98,6 +117,29 @@ public class ArmSubsystem extends SubsystemBase {
     }));
   }
 
+  public Command dumshoot() {
+    return Commands.run(() -> {
+      lShooter.set(Constants.Intake.SHOOT_SPEED);
+    }).handleInterrupt(() -> {stopEverythingMethod();});
+  }
+
+  public Command dumamp() {
+    return Commands.run(() -> {
+      lShooter.set(Constants.Intake.AMP_OUTTAKE_SPEED);
+    }).handleInterrupt(() -> {stopEverythingMethod();});
+  }
+  
+  public Command dumbExtendElevator() {
+    return Commands.run(() -> {
+      lElevator.set(-0.1);
+    }).handleInterrupt(() -> {stopEverythingMethod();});
+  }
+  public Command dumbRetractElevator() {
+    return Commands.run(() -> {
+      lElevator.set(0.1);
+    }).handleInterrupt(() -> {stopEverythingMethod();});
+  }
+
   public Command outtake() {
     return Commands.run(() -> {
       // spin outer wheels to 10 power
@@ -107,7 +149,7 @@ public class ArmSubsystem extends SubsystemBase {
       // TODO change this value
     }).andThen(Commands.run(() -> {
       lFeeder.set(Constants.Intake.AMP_OUTTAKE_SPEED);
-    }));
+    }).handleInterrupt(this::stopEverythingMethod));
   }
   
   public Command moveElevatorTo(int pos) {
