@@ -33,12 +33,9 @@ public class ArmSubsystem extends SubsystemBase {
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
-    rElevator.follow(lElevator);
-    rElevator.setInverted(true);
-    rShooter.follow(lShooter);
-    rShooter.setInverted(true);
-    rFeeder.follow(lFeeder);
-    rFeeder.setInverted(true);
+    rElevator.follow(lElevator, true);
+    rShooter.follow(lShooter, true);
+    rFeeder.follow(lFeeder, true);
 
   }
 
@@ -112,9 +109,14 @@ public class ArmSubsystem extends SubsystemBase {
       lShooter.set(Constants.Intake.SHOOT_SPEED);
     }).until(() -> {
       return lShooter.getEncoder().getVelocity() < Constants.Intake.SHOOT_VELOCITY;
-    }).andThen(Commands.run(() -> {
+    }).andThen(Commands.runOnce(() -> {
       lFeeder.set(Constants.Intake.SHOOT_SPEED);
-    }));
+    }))
+    .andThen(new WaitCommand(2))
+    .andThen(() -> {
+      System.out.println("we are done with the command");
+      stopEverythingMethod();
+    });
   }
 
   public Command dumshoot() {

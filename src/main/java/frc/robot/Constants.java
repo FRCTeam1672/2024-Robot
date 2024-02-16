@@ -42,10 +42,10 @@ public final class Constants
   public static final class Intake {
     public static final double AMP_OUTTAKE_SPEED = 0.2;
     // its not about speed its about power (speed = power)
-    public static final double INTAKE_SPEED = -0.1;
+    public static final double INTAKE_SPEED = -0.3;
     public static final double SHOOT_SPEED = 1;
-    public static final int OUTTAKE_VELOCITY = 10;
-    public static final int SHOOT_VELOCITY = 10;
+    public static final double OUTTAKE_VELOCITY = .10;
+    public static final int SHOOT_VELOCITY = 4800;
   }
   /**
    * This class is for aiming. 

@@ -60,6 +60,7 @@ public class RobotContainer {
 
 
     driverXbox.povDown().whileTrue(arm.intake()).onFalse(Commands.run(arm::stopEverything));
+        driverXbox.povRight().onTrue(arm.shoot().andThen(new WaitCommand(2).andThen(arm.stopEverything())));
     driverXbox.povUp().whileTrue(arm.outtake()).onFalse(Commands.run(arm::stopEverything));
     driverXbox.rightTrigger().whileTrue(arm.dumshoot()).onFalse(Commands.run(arm::stopEverything));
     driverXbox.leftTrigger().whileTrue(arm.dumamp()).onFalse(Commands.run(arm::stopEverything));
