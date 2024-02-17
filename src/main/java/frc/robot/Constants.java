@@ -40,11 +40,14 @@ public final class Constants
     public static final double WHEEL_LOCK_TIME = 10; // seconds
   }
   public static final class Intake {
-    public static final double AMP_OUTTAKE_SPEED = 0.2;
     // its not about speed its about power (speed = power)
-    public static final double INTAKE_SPEED = -0.3;
-    public static final double SHOOT_SPEED = 1;
-    public static final double OUTTAKE_VELOCITY = .10;
+    public static final class INTAKE_SPEEDS {
+      public static final double FEEDER_INTAKE_SPEED = 0.6;
+      public static final double SHOOTER_INTAKE_SPEED = 0.3;
+    }
+    public static final double AMP_OUTTAKE_SPEED = 0.3;
+    public static final double SHOOT_SPEED = -1;
+    public static final double OUTTAKE_VELOCITY = 1200;
     public static final int SHOOT_VELOCITY = 4800;
   }
   /**
@@ -55,12 +58,12 @@ public final class Constants
     public static final int WRIST_ANGLE_SPAKER = 120;
     public static final int ELEVATOR_HEIGHT_AMP = 1;
     public static final int ELEVATOR_HEIGHT_SPEAKER = 1000000;
-    public static final double AMP_AIM_SPEED = 0.3;
+    public static final double AMP_AIM_SPEED = 0.1;
     public static final double SLOW_PRECISION_SPEED = -0.1;
   }
 
   public static final class Elevator {
-    public static final double HOME_SPEED = -0.5;
+    public static final double HOME_SPEED = 0.3;
   }
 
   public static final class OperatorConstants

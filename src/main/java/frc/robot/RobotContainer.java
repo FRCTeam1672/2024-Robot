@@ -60,11 +60,15 @@ public class RobotContainer {
 
 
     driverXbox.povDown().whileTrue(arm.intake()).onFalse(Commands.run(arm::stopEverything));
-        driverXbox.povRight().onTrue(arm.shoot().andThen(new WaitCommand(2).andThen(arm.stopEverything())));
-    driverXbox.povUp().whileTrue(arm.outtake()).onFalse(Commands.run(arm::stopEverything));
+        driverXbox.povLeft().onTrue(arm.moveElevatorTo(-44));
+    driverXbox.povLeft().onTrue(arm.moveWristTo(-18));
+    driverXbox.povUp().onTrue(arm.outtake().andThen(new WaitCommand(2)).andThen(arm.stopEverything())).onFalse(Commands.run(arm::stopEverything));
+
+
+    driverXbox.b().onTrue(arm.moveWristTo(0).andThen(arm.moveElevatorTo(0)));
     driverXbox.rightTrigger().whileTrue(arm.dumshoot()).onFalse(Commands.run(arm::stopEverything));
     driverXbox.leftTrigger().whileTrue(arm.dumamp()).onFalse(Commands.run(arm::stopEverything));
-    driverXbox.leftBumper().whileTrue(arm.goSlowDown()).onFalse(Commands.run(arm::stopEverything));
+    driverXbox.leftBumper().whileTrue(arm.goSlowDown());
     driverXbox.rightBumper().whileTrue(arm.goSlowUp());
 
         driverXbox.y().whileTrue(arm.dumbExtendElevator()).onFalse(Commands.run(arm::stopEverything));

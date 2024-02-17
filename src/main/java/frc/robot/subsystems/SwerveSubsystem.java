@@ -221,10 +221,10 @@ public class SwerveSubsystem extends SubsystemBase
   {
     return run(() -> {
       // Make the robot move
-      if(translationX.getAsDouble() == 0 && translationY.getAsDouble() == 0 && angularRotationX.getAsDouble() == 0) {
-        lock();
-        return;
-      }
+      // if(translationX.getAsDouble() == 0 && translationY.getAsDouble() == 0 && angularRotationX.getAsDouble() == 0) {
+      //   lock();
+      //   return;
+      // }
       swerveDrive.drive(new Translation2d(Math.pow(translationX.getAsDouble(), 3) * swerveDrive.getMaximumVelocity(),
                                           Math.pow(translationY.getAsDouble(), 3) * swerveDrive.getMaximumVelocity()),
                         Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumAngularVelocity(),
