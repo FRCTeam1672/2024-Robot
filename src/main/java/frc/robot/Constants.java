@@ -42,13 +42,13 @@ public final class Constants
   public static final class Intake {
     // its not about speed its about power (speed = power)
     public static final class INTAKE_SPEEDS {
-      public static final double FEEDER_INTAKE_SPEED = 0.6;
-      public static final double SHOOTER_INTAKE_SPEED = 0.3;
+      public static final double FEEDER_INTAKE_SPEED = 0.5;
+      public static final double SHOOTER_INTAKE_SPEED = 0.1;
     }
     public static final double AMP_OUTTAKE_SPEED = 0.3;
     public static final double SHOOT_SPEED = -1;
     public static final double OUTTAKE_VELOCITY = 1200;
-    public static final int SHOOT_VELOCITY = 4800;
+    public static final int SHOOT_VELOCITY = 6000;
   }
   /**
    * This class is for aiming. 
@@ -58,7 +58,7 @@ public final class Constants
     public static final int WRIST_ANGLE_SPAKER = 120;
     public static final int ELEVATOR_HEIGHT_AMP = 1;
     public static final int ELEVATOR_HEIGHT_SPEAKER = 1000000;
-    public static final double AMP_AIM_SPEED = 0.1;
+    public static final double AMP_AIM_SPEED = 0.2;
     public static final double SLOW_PRECISION_SPEED = -0.1;
   }
 

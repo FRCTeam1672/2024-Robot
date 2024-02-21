@@ -29,10 +29,10 @@ public class ArmSubsystem extends SubsystemBase {
 
   private DigitalInput limitSwitch = new DigitalInput(0);
 
-  private PIDController wristPidController = new PIDController(0.4, 0, 0);
+  private PIDController wristPidController = new PIDController(0.4, 0, 0.0001);
   private PIDController elevatorPidController = new PIDController(0.07, 0, 0);
 
-  private int wristPosition = 0;
+  private double wristPosition = -0.32;
   private double elevatorPosition = 0;
 
   /** Creates a new ArmSubsystem. */
@@ -117,12 +117,12 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public Command shoot() {
-    return Commands.run(() -> {
+    return Commands.runOnce(() -> {
       // spin outer wheels to 100 power
       lShooter.set(Constants.Intake.SHOOT_SPEED);
-    }).until(() -> {
-      return lShooter.getEncoder().getVelocity() < Constants.Intake.SHOOT_VELOCITY;
-    }).andThen(Commands.runOnce(() -> {
+    })
+    .andThen(new WaitCommand(2))
+    .andThen(Commands.runOnce(() -> {
       lFeeder.set(Constants.Intake.SHOOT_SPEED);
     }))
     .andThen(new WaitCommand(2))
@@ -176,7 +176,7 @@ public class ArmSubsystem extends SubsystemBase {
     });
   }
   
-  public Command moveElevatorTo(int pos) {
+  public Command moveElevatorTo(double pos) {
     return Commands.runOnce(() -> {
       elevatorPosition = pos;
     });
@@ -187,7 +187,7 @@ public class ArmSubsystem extends SubsystemBase {
    * @param pos the position to go to
    * @return the command to move the wrist
    */
-  public Command moveWristTo(int pos) {
+  public Command moveWristTo(double pos) {
     return Commands.runOnce(() -> {
       wristPosition = pos;
     });
