@@ -28,11 +28,11 @@ public class ArmSubsystem extends SubsystemBase {
   private CANSparkMax wrist = new CANSparkMax(50, MotorType.kBrushless);
 
   private DigitalInput limitSwitch = new DigitalInput(0);
-
+  
   private PIDController wristPidController = new PIDController(0.4, 0, 0.0001);
   private PIDController elevatorPidController = new PIDController(0.07, 0, 0);
 
-  private double wristPosition = -0.32;
+  private double wristPosition = -1.2;
   private double elevatorPosition = 0;
 
   /** Creates a new ArmSubsystem. */
@@ -40,7 +40,6 @@ public class ArmSubsystem extends SubsystemBase {
     rElevator.follow(lElevator, true);
     rShooter.follow(lShooter, true);
     rFeeder.follow(lFeeder, true);
-
   }
 
   @Override
@@ -127,7 +126,6 @@ public class ArmSubsystem extends SubsystemBase {
     }))
     .andThen(new WaitCommand(2))
     .andThen(() -> {
-      System.out.println("we are done with the command");
       stopEverythingMethod();
     });
   }

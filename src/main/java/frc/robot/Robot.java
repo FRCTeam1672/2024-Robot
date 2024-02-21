@@ -7,6 +7,9 @@ package frc.robot;
 import java.io.File;
 import java.io.IOException;
 
+import org.photonvision.EstimatedRobotPose;
+import java.util.Optional;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -66,11 +69,11 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic()
   {
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
-    // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    Optional<EstimatedRobotPose> estimatedGlobalPose = m_robotContainer.getVisionSubsystem().getEstimatedGlobalPose();
+    if(estimatedGlobalPose.isPresent()){
+      m_robotContainer.getDrivebase().addVisionReading(estimatedGlobalPose.get().estimatedPose.toPose2d(), estimatedGlobalPose.get().timestampSeconds);
+    }
   }
 
   /**

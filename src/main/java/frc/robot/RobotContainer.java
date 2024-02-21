@@ -22,6 +22,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.LEDSubsytem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
   private final SwerveSubsystem drivebase = new SwerveSubsystem(
@@ -29,6 +30,7 @@ public class RobotContainer {
   private final CommandXboxController driverXbox = new CommandXboxController(0);
   private final ArmSubsystem arm = new ArmSubsystem();
   private final LEDSubsytem ledSubsytem = new LEDSubsytem();
+  private final VisionSubsystem visionSubsystem = new VisionSubsystem();
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -40,12 +42,15 @@ public class RobotContainer {
     // controls are front-left positive
     // left stick controls translation
     // right stick controls the angular velocity of the robot
+
+    //DoubleSupplier 
+
+
     Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
-        () -> MathUtil.clamp(MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1,
-            1),
-        () -> MathUtil.clamp(MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1,
-            1),
-        () -> -driverXbox.getRightX());
+        () -> MathUtil.clamp(MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1,1),
+        () -> MathUtil.clamp(MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1,1),
+        () -> -driverXbox.getRightX(), 
+        () -> driverXbox.leftBumper().getAsBoolean());
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     // drivebase.setDefaultCommand(closedAbsoluteDrive);
@@ -62,23 +67,19 @@ public class RobotContainer {
 
 
     driverXbox.povDown().whileTrue(arm.intake()).onFalse(Commands.run(arm::stopEverything));
-        driverXbox.povLeft().onTrue(arm.moveElevatorTo(-44));
-    driverXbox.povLeft().onTrue(arm.moveWristTo(-18));
+
+    //amp position
+    driverXbox.povLeft().onTrue(Commands.parallel(arm.moveElevatorTo(-44), arm.moveWristTo(-18)));
     
     driverXbox.povRight().onTrue(arm.shoot().andThen(new WaitCommand(2)).andThen(arm.stopEverything()));
     driverXbox.povUp().onTrue(arm.outtake().andThen(new WaitCommand(2)).andThen(arm.stopEverything())).onFalse(Commands.run(arm::stopEverything));
 
 
-    driverXbox.b().onTrue(arm.moveWristTo(-0.34).andThen(arm.moveElevatorTo(-0.34)));
+    driverXbox.b().onTrue(arm.moveWristTo(-1.2).andThen(arm.moveElevatorTo(-1.2)));
     driverXbox.rightTrigger().whileTrue(arm.dumshoot()).onFalse(Commands.run(arm::stopEverything));
     driverXbox.leftTrigger().whileTrue(arm.dumamp()).onFalse(Commands.run(arm::stopEverything));
-    driverXbox.leftBumper().whileTrue(arm.goSlowDown());
-    driverXbox.rightBumper().whileTrue(arm.goSlowUp());
      
     driverXbox.y().onTrue(arm.moveElevatorTo(-47));
-
-    driverXbox.a().whileTrue(arm.dumbRetractElevator()).onFalse(Commands.run(arm::stopEverything));
-
   }
 
   /**
@@ -101,5 +102,11 @@ public class RobotContainer {
   // 100% goon activated
   public void setMotorBrake(boolean brake) {
     drivebase.setMotorBrake(brake);
+  }
+  public VisionSubsystem getVisionSubsystem() {
+    return visionSubsystem;
+  }
+  public SwerveSubsystem getDrivebase() {
+    return drivebase;
   }
 }
