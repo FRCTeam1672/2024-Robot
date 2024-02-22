@@ -39,6 +39,7 @@ public final class Constants
     // Hold time on motor brakes when disabled
     public static final double WHEEL_LOCK_TIME = 10; // seconds
   }
+
   public static final class Intake {
     // its not about speed its about power (speed = power)
     public static final class INTAKE_SPEEDS {
@@ -52,12 +53,14 @@ public final class Constants
   }
   /**
    * This class is for aiming. 
+   * @param nothing its legit nothing dumbass
    */
-  public static final class Aim { 
-    public static final int WRIST_ANGLE_AMP = 120;
-    public static final int WRIST_ANGLE_SPAKER = 120;
-    public static final int ELEVATOR_HEIGHT_AMP = 1;
-    public static final int ELEVATOR_HEIGHT_SPEAKER = 1000000;
+  public static final class Aim {
+    public static final double HOME_POSITION = -1.2; 
+    public static final double WRIST_ANGLE_AMP = -18;
+    public static final double WRIST_ANGLE_SPEAKER = HOME_POSITION; //asgfawieasfafeawefawefaergjuwGAWEFLIHAEGIUAHERGIAEHGAEIGUHAFJBASDJBADJFASDJLGHASDIFLAEIULAIWULHGIAUEHFKASDHFGJKADHG
+    public static final double ELEVATOR_HEIGHT_AMP = -44;
+    public static final double ELEVATOR_HEIGHT_SOURCE = -47; //aksefhawefhGPUIeqehrghquierghuieqrhghadfjkghkadghuishguhsekgjhsdjkfghadughauighlafklahawilawlegaagalalkgaelg
     public static final double AMP_AIM_SPEED = 0.2;
     public static final double SLOW_PRECISION_SPEED = -0.1;
   }

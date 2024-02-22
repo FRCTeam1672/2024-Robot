@@ -28,6 +28,7 @@ public class RobotContainer {
   private final SwerveSubsystem drivebase = new SwerveSubsystem(
       new File(Filesystem.getDeployDirectory(), "swerve/neo"));
   private final CommandXboxController driverXbox = new CommandXboxController(0);
+  private final CommandXboxController oppsController = new CommandXboxController(1);
   private final ArmSubsystem arm = new ArmSubsystem();
   private final LEDSubsytem ledSubsytem = new LEDSubsytem();
   private final VisionSubsystem visionSubsystem = new VisionSubsystem();
@@ -66,20 +67,18 @@ public class RobotContainer {
     //                           andThen(arm.stopEverything()));
 
 
-    driverXbox.povDown().whileTrue(arm.intake()).onFalse(Commands.run(arm::stopEverything));
+    oppsController.povDown().whileTrue(arm.intake()).onFalse(Commands.run(arm::stopEverything));
 
     //amp position
-    driverXbox.povLeft().onTrue(Commands.parallel(arm.moveElevatorTo(-44), arm.moveWristTo(-18)));
+    oppsController.povLeft().onTrue(Commands.parallel(arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_AMP), arm.moveWristTo(Constants.Aim.WRIST_ANGLE_AMP)));
     
-    driverXbox.povRight().onTrue(arm.shoot().andThen(new WaitCommand(2)).andThen(arm.stopEverything()));
-    driverXbox.povUp().onTrue(arm.outtake().andThen(new WaitCommand(2)).andThen(arm.stopEverything())).onFalse(Commands.run(arm::stopEverything));
+    oppsController.povRight().onTrue(arm.shoot().andThen(new WaitCommand(2)).andThen(arm.stopEverything()));
+    oppsController.povUp().onTrue(arm.outtake().andThen(new WaitCommand(2)).andThen(arm.stopEverything())).onFalse(Commands.run(arm::stopEverything));
 
-
-    driverXbox.b().onTrue(arm.moveWristTo(-1.2).andThen(arm.moveElevatorTo(-1.2)));
-    driverXbox.rightTrigger().whileTrue(arm.dumshoot()).onFalse(Commands.run(arm::stopEverything));
-    driverXbox.leftTrigger().whileTrue(arm.dumamp()).onFalse(Commands.run(arm::stopEverything));
-     
-    driverXbox.y().onTrue(arm.moveElevatorTo(-47));
+    //retract everything but keep hovering
+    oppsController.b().onTrue(arm.moveWristTo(Constants.Aim.HOME_POSITION).andThen(arm.moveElevatorTo(Constants.Aim.HOME_POSITION)));
+    //move to source position
+    oppsController.y().onTrue(arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SOURCE));
   }
 
   /**
