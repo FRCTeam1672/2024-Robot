@@ -37,7 +37,7 @@ public class LEDSubsytem extends SubsystemBase {
             //     ledBuffer.setRGB(i, 11, 76, 181);
 
 
-           ledBuffer.setRGB(i, 117, 13, 158);
+           ledBuffer.setRGB(i, 169, 212, 95);
 
         //    ledBuffer.setRGB(i, 28, 191, 19);
 

@@ -12,6 +12,9 @@ import java.util.Optional;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -75,6 +78,15 @@ public class Robot extends TimedRobot {
       m_robotContainer.getDrivebase().addVisionReading(estimatedGlobalPose.get().estimatedPose.toPose2d(), estimatedGlobalPose.get().timestampSeconds);
     }
   }
+  public static final Pose2d convertToRedSide(Pose2d pose) {
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+
+    if (alliance.isPresent() && alliance.get() == Alliance.Red) {
+      return new Pose2d(pose.getX(), pose.getY(), pose.getRotation().plus(Rotation2d.fromDegrees(180.0)));
+    }
+
+    return pose;
+}
 
   /**
    * This function is called once each time the robot enters Disabled mode.
