@@ -32,7 +32,7 @@ public class ArmSubsystem extends SubsystemBase {
   private PIDController wristPidController = new PIDController(0.4, 0, 0.0001);
   private PIDController elevatorPidController = new PIDController(0.07, 0, 0);
 
-  private double wristPosition = -1.2;
+  private double wristPosition = Constants.Aim.HOME_POSITION;
   private double elevatorPosition = 0;
 
   /** Creates a new ArmSubsystem. */
@@ -202,8 +202,8 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public Command scoreSpeaker() {
-    return  moveWristTo(Constants.Aim.WRIST_ANGLE_SPAKER).
-            alongWith(moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SPEAKER)).
+    return  moveWristTo(Constants.Aim.WRIST_ANGLE_SPEAKER).
+            alongWith(moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SOURCE)).
             andThen(shoot()).
             andThen(new WaitCommand(2)).
             andThen(stopEverything()).

@@ -54,11 +54,11 @@ public class RobotContainer {
         () -> driverXbox.leftBumper().getAsBoolean());
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
-    // drivebase.setDefaultCommand(closedAbsoluteDrive);
-  }
+    // drivebase.setDefaultCommand(closedAbsoluteDrive);  
+  } 
   private void configureBindings() {
     driverXbox.a().onTrue(new InstantCommand(drivebase::lock, drivebase));
-    driverXbox.x().onTrue(new InstantCommand(drivebase::zeroGyro, drivebase).ignoringDisable(true));
+    driverXbox.x().onTrue(new InstantCommand(drivebase::zeroGyroWithAlliance, drivebase).ignoringDisable(true));
     // driverXbox.povDown().onTrue(drivebase.driveToPose(new Pose2d(1.89, 7.67, new Rotation2d(Math.toRadians(90)))).
     //                             andThen(arm.scoreAmp()));
     // driverXbox.povUp().onTrue(drivebase.driveToPose(new Pose2d(15.47, 0.89, new Rotation2d(Math.toRadians(-60)))).
