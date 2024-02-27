@@ -57,16 +57,16 @@ public final class Constants
    */
   public static final class Aim {
     public static final double HOME_POSITION = -1.2; 
-    public static final double WRIST_ANGLE_AMP = -18;
+    public static final double WRIST_ANGLE_AMP = -17;
     public static final double WRIST_ANGLE_SPEAKER = HOME_POSITION; //asgfawieasfafeawefawefaergjuwGAWEFLIHAEGIUAHERGIAEHGAEIGUHAFJBASDJBADJFASDJLGHASDIFLAEIULAIWULHGIAUEHFKASDHFGJKADHG
-    public static final double ELEVATOR_HEIGHT_AMP = -44;
-    public static final double ELEVATOR_HEIGHT_SOURCE = -47; //aksefhawefhGPUIeqehrghquierghuieqrhghadfjkghkadghuishguhsekgjhsdjkfghadughauighlafklahawilawlegaagalalkgaelg
-    public static final double AMP_AIM_SPEED = 0.2;
+    public static final double ELEVATOR_HEIGHT_AMP = -77;
+    public static final double ELEVATOR_HEIGHT_SOURCE = -69;//aksefhawefhGPUIeqehrghquierghuieqrhghadfjkghkadghuishguhsekgjhsdjkfghadughauighlafklahawilawlegaagalalkgaelg
+    public static final double AMP_AIM_SPEED = 0.4;
     public static final double SLOW_PRECISION_SPEED = -0.1;
   }
 
   public static final class Elevator {
-    public static final double HOME_SPEED = 0.3;
+    public static final double HOME_SPEED = 0.8;
   }
 
   public static final class OperatorConstants

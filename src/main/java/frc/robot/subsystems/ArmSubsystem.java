@@ -29,8 +29,8 @@ public class ArmSubsystem extends SubsystemBase {
 
   private DigitalInput limitSwitch = new DigitalInput(0);
   
-  private PIDController wristPidController = new PIDController(0.4, 0, 0.0001);
-  private PIDController elevatorPidController = new PIDController(0.07, 0, 0);
+  private PIDController wristPidController = new PIDController(0.4, 0, 0.0005);
+  private PIDController elevatorPidController = new PIDController(0.07, 0, 0.02);
 
   private double wristPosition = Constants.Aim.HOME_POSITION;
   private double elevatorPosition = 0;
@@ -62,6 +62,11 @@ public class ArmSubsystem extends SubsystemBase {
       elevatorPidController.setSetpoint(elevatorPosition);
       lElevator.set(MathUtil.clamp(elevatorPidController.calculate(lElevator.getEncoder().getPosition()), -Constants.Elevator.HOME_SPEED, Constants.Elevator.HOME_SPEED));
     }
+
+
+        SmartDashboard.putNumber("Elevator Setpoint", elevatorPidController.getSetpoint());
+        SmartDashboard.putNumber("Wrist Setpoint", wristPidController.getSetpoint());
+
   }
 
   //stop everything

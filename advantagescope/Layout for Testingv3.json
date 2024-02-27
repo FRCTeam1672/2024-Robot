@@ -1,0 +1,282 @@
+{
+  "hubs": [
+    {
+      "x": -7,
+      "y": 0,
+      "width": 802,
+      "height": 823,
+      "state": {
+        "sidebar": {
+          "width": 0,
+          "expanded": [
+            "/SmartDashboard/Field",
+            "/photonvision/Arducam_OV9281_USB_Camera",
+            "/LiveWindow/.status",
+            "/PathPlanner/HotReload",
+            "/CameraPublisher/photonvision_Port_1182_Output_MJPEG_Server",
+            "/photonvision/Arducam_OV9281_USB_Camera/result_proto",
+            "/photonvision/Arducam_OV9281_USB_Camera/result_proto/multi_target_result",
+            "/photonvision/Arducam_OV9281_USB_Camera/result_proto/multi_target_result/estimated_pose",
+            "/photonvision/Arducam_OV9281_USB_Camera/result_proto/multi_target_result/estimated_pose/alt",
+            "/SmartDashboard",
+            "/SmartDashboard/Field/traj"
+          ]
+        },
+        "tabs": {
+          "selected": 2,
+          "tabs": [
+            {
+              "type": 0,
+              "path": "../docs/INDEX.md"
+            },
+            {
+              "type": 1,
+              "legendHeight": 0.3,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "NT:/SmartDashboard/lElevator Height",
+                      "color": "#2b66a2",
+                      "show": true
+                    },
+                    {
+                      "key": "NT:/SmartDashboard/rElevator Height",
+                      "color": "#e5b31b",
+                      "show": true
+                    },
+                    {
+                      "key": "NT:/SmartDashboard/Elevator Setpoint",
+                      "color": "#af2437",
+                      "show": true
+                    }
+                  ]
+                },
+                "discrete": {
+                  "fields": []
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": []
+                }
+              },
+              "title": "Elevators"
+            },
+            {
+              "type": 1,
+              "legendHeight": 0.3,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "NT:/SmartDashboard/Wrist Angle",
+                      "color": "#2b66a2",
+                      "show": true
+                    },
+                    {
+                      "key": "NT:/SmartDashboard/Wrist Setpoint",
+                      "color": "#e5b31b",
+                      "show": true
+                    }
+                  ]
+                },
+                "discrete": {
+                  "fields": []
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": []
+                }
+              },
+              "title": "Wrist Joint"
+            },
+            {
+              "type": 1,
+              "legendHeight": 0.3,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "NT:/SmartDashboard/LIntake Velocity",
+                      "color": "#2b66a2",
+                      "show": true
+                    },
+                    {
+                      "key": "NT:/SmartDashboard/RIntake Velocity",
+                      "color": "#e5b31b",
+                      "show": true
+                    }
+                  ]
+                },
+                "discrete": {
+                  "fields": []
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "NT:/SmartDashboard/RShooter Velocity",
+                      "color": "#af2437",
+                      "show": true
+                    },
+                    {
+                      "key": "NT:/SmartDashboard/LShooter Velocity",
+                      "color": "#80588e",
+                      "show": true
+                    }
+                  ]
+                }
+              },
+              "title": "Intake and Shooter"
+            },
+            {
+              "type": 6,
+              "uuid": "8nbmknt9ydki2496jelgp1l9uxo5df38",
+              "fields": [],
+              "listFields": [
+                [
+                  {
+                    "type": "Green Ghost",
+                    "key": "NT:/photonvision/Arducam_OV9281_USB_Camera/result_proto/multi_target_result/estimated_pose/best",
+                    "sourceTypeIndex": 3,
+                    "sourceType": "Transform3d"
+                  },
+                  {
+                    "type": "Yellow Ghost",
+                    "key": "NT:/photonvision/Arducam_OV9281_USB_Camera/result_proto/multi_target_result/estimated_pose/alt",
+                    "sourceTypeIndex": 3,
+                    "sourceType": "Transform3d"
+                  },
+                  {
+                    "type": "AprilTag 36h11",
+                    "key": "NT:/photonvision/Arducam_OV9281_USB_Camera/targetPose",
+                    "sourceTypeIndex": 0,
+                    "sourceType": 5
+                  }
+                ],
+                [
+                  {
+                    "type": "Robot",
+                    "key": "NT:/SmartDashboard/Field/Robot",
+                    "sourceTypeIndex": 0,
+                    "sourceType": 5
+                  }
+                ]
+              ],
+              "options": {
+                "field": "2024 Field",
+                "alliance": "blue",
+                "robot": "2024 KitBot",
+                "unitDistance": "meters",
+                "unitRotation": "degrees"
+              },
+              "configHidden": false,
+              "visualizer": {
+                "cameraIndex": -2,
+                "orbitFov": 50,
+                "cameraPosition": [
+                  2.675149433204626,
+                  2.875739334577533,
+                  1.799429078363469
+                ],
+                "cameraTarget": [
+                  0.04376278471272954,
+                  0.5785096679239946,
+                  -0.2069621061366629
+                ]
+              },
+              "title": "3D Field"
+            },
+            {
+              "type": 9,
+              "uuid": "5an2rmsfoumm7vb9pmckxms3bioduwrg",
+              "fields": [
+                {
+                  "key": "NT:/SmartDashboard/swerve/measuredStates",
+                  "sourceTypeIndex": 0,
+                  "sourceType": 5
+                },
+                {
+                  "key": "NT:/SmartDashboard/swerve/desiredStates",
+                  "sourceTypeIndex": 0,
+                  "sourceType": 5
+                },
+                {
+                  "key": "NT:/SmartDashboard/swerve/robotRotation",
+                  "sourceTypeIndex": 0,
+                  "sourceType": 2
+                }
+              ],
+              "listFields": [],
+              "options": {
+                "maxSpeed": 4.5,
+                "rotationUnits": "degrees",
+                "arrangement": "0,1,2,3",
+                "sizeLeftRight": 0.65,
+                "sizeFrontBack": 0.65,
+                "forwardDirection": "up"
+              },
+              "configHidden": false,
+              "visualizer": null,
+              "title": "Swerve"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "satellites": [
+    {
+      "x": 781,
+      "y": 0,
+      "width": 762,
+      "height": 823,
+      "state": {
+        "type": 6,
+        "visualizer": {
+          "cameraIndex": -2,
+          "orbitFov": 50,
+          "cameraPosition": [
+            2.7030609104272414,
+            2.137725273643555,
+            -2.1578332151836332
+          ],
+          "cameraTarget": [
+            0,
+            0.5,
+            0
+          ]
+        }
+      },
+      "uuid": "8nbmknt9ydki2496jelgp1l9uxo5df38"
+    }
+  ],
+  "version": "3.2.0"
+}
