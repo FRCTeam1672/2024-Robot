@@ -25,6 +25,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
+import swervelib.SwerveModule;
 import swervelib.math.SwerveMath;
 import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
@@ -122,6 +123,12 @@ public class SwerveSubsystem extends SubsystemBase {
         },
         this // Reference to this subsystem to set requirements
     );
+  }
+
+  public void pointModulesForward() {
+    for(SwerveModule module : swerveDrive.getModules()) {
+      module.setAngle(0);
+    }
   }
 
   public void zeroGyroWithAlliance() {

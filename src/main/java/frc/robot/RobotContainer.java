@@ -22,9 +22,13 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.LEDSubsytem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+
+//37, 97, and 98 are climb
+//uncomment eventually
 
 public class RobotContainer {
   private final SwerveSubsystem drivebase = new SwerveSubsystem(
@@ -34,6 +38,7 @@ public class RobotContainer {
   private final ArmSubsystem arm = new ArmSubsystem();
   private final LEDSubsytem ledSubsytem = new LEDSubsytem();
   private final VisionSubsystem visionSubsystem = new VisionSubsystem();
+  //private final ClimbSubsystem climb = new ClimbSubsystem();
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -70,6 +75,7 @@ public class RobotContainer {
     // drivebase.setDefaultCommand(closedAbsoluteDrive);  
   } 
   private void configureBindings() {
+        driverXbox.rightBumper().onTrue(new InstantCommand(drivebase::pointModulesForward , drivebase));
     driverXbox.a().onTrue(new InstantCommand(drivebase::lock, drivebase));
     driverXbox.x().onTrue(new InstantCommand(drivebase::zeroGyroWithAlliance, drivebase).ignoringDisable(true));
     // driverXbox.povDown().onTrue(drivebase.driveToPose(new Pose2d(1.89, 7.67, new Rotation2d(Math.toRadians(90)))).
@@ -83,15 +89,17 @@ public class RobotContainer {
     oppsController.povDown().whileTrue(arm.intake()).onFalse(Commands.run(arm::stopEverything));
 
     //amp position
-    oppsController.povLeft().onTrue(Commands.parallel(arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_AMP), arm.moveWristTo(Constants.Aim.WRIST_ANGLE_AMP)));
+    oppsController.x().onTrue(Commands.parallel(arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_AMP), arm.moveWristTo(Constants.Aim.WRIST_ANGLE_AMP)));
     
-    oppsController.povRight().onTrue(arm.shoot().andThen(new WaitCommand(2)).andThen(arm.stopEverything()));
+    oppsController.a().onTrue(arm.shoot().andThen(new WaitCommand(2)).andThen(arm.stopEverything()));
     oppsController.povUp().onTrue(arm.outtake().andThen(new WaitCommand(2)).andThen(arm.stopEverything())).onFalse(Commands.run(arm::stopEverything));
 
     //retract everything but keep hovering
     oppsController.b().onTrue(arm.moveWristTo(Constants.Aim.HOME_POSITION).andThen(arm.moveElevatorTo(Constants.Aim.HOME_POSITION)));
     //move to source position
     oppsController.y().onTrue(arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SOURCE));
+    //oppsController.leftBumper().whileTrue(climb.goDown().handleInterrupt(climb::stop));
+    //oppsController.rightBumper().whileTrue(climb.goUp().handleInterrupt(climb::stop));
   }
 
   /**

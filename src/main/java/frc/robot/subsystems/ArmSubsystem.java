@@ -29,8 +29,8 @@ public class ArmSubsystem extends SubsystemBase {
 
   private DigitalInput limitSwitch = new DigitalInput(0);
   
-  private PIDController wristPidController = new PIDController(0.4, 0, 0.0005);
-  private PIDController elevatorPidController = new PIDController(0.07, 0, 0.02);
+  private PIDController wristPidController = new PIDController(0.25, 0, 0.00001);
+  private PIDController elevatorPidController = new PIDController(0.07, 0, 0.04);
 
   private double wristPosition = Constants.Aim.HOME_POSITION;
   private double elevatorPosition = 0;
