@@ -5,14 +5,17 @@
 package frc.robot;
 
 import java.io.File;
+import java.util.Optional;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -74,10 +77,20 @@ public class RobotContainer {
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     // drivebase.setDefaultCommand(closedAbsoluteDrive);  
   } 
+  public static final Pose2d convertToRedSide(Pose2d pose) {
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+
+    return pose;
+}
   private void configureBindings() {
-        driverXbox.rightBumper().onTrue(new InstantCommand(drivebase::pointModulesForward , drivebase));
+    driverXbox.leftTrigger().whileTrue(drivebase.aimAtTarget(visionSubsystem.getCamera()));
+    driverXbox.rightBumper().onTrue(new InstantCommand(drivebase::pointModulesForward , drivebase));
     driverXbox.a().onTrue(new InstantCommand(drivebase::lock, drivebase));
     driverXbox.x().onTrue(new InstantCommand(drivebase::zeroGyroWithAlliance, drivebase).ignoringDisable(true));
+
+    driverXbox.b().onTrue(drivebase.driveToPose(new Pose2d(new Translation2d(14.56, 6.56), new Rotation2d(Math.toRadians(90)))).andThen(
+      drivebase.getAutonomousCommand("REDamp", false)
+    ));
     // driverXbox.povDown().onTrue(drivebase.driveToPose(new Pose2d(1.89, 7.67, new Rotation2d(Math.toRadians(90)))).
     //                             andThen(arm.scoreAmp()));
     // driverXbox.povUp().onTrue(drivebase.driveToPose(new Pose2d(15.47, 0.89, new Rotation2d(Math.toRadians(-60)))).
@@ -89,7 +102,8 @@ public class RobotContainer {
     oppsController.povDown().whileTrue(arm.intake()).onFalse(Commands.run(arm::stopEverything));
 
     //amp position
-    oppsController.x().onTrue(Commands.parallel(arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_AMP), arm.moveWristTo(Constants.Aim.WRIST_ANGLE_AMP)));
+    //oppsController.x().onTrue(arm.moveWristTo(Constants.Aim.WRIST_ANGLE_AMP));
+    oppsController.x().onTrue(arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_AMP).andThen(Commands.waitUntil(arm::shouldMoveWristJoint).andThen(arm.moveWristTo(Constants.Aim.WRIST_ANGLE_AMP))));
     
     oppsController.a().onTrue(arm.shoot().andThen(new WaitCommand(2)).andThen(arm.stopEverything()));
     oppsController.povUp().onTrue(arm.outtake().andThen(new WaitCommand(2)).andThen(arm.stopEverything())).onFalse(Commands.run(arm::stopEverything));
@@ -109,10 +123,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Commands.sequence(
-      drivebase.getAutonomousCommand("Figure 8 Notes", true),
-      drivebase.getAutonomousCommand("Figure 8 Notes", false)
-    );
+    return Commands.runOnce(() -> drivebase.drive(new Translation2d(-1, 0), 0, false),drivebase)
+    .andThen(Commands.waitSeconds(3)).andThen(() -> drivebase.drive(new Translation2d(0, 0), 0, false));
   }
 
   public void setDriveMode() {

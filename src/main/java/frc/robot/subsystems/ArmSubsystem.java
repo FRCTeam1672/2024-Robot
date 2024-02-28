@@ -28,9 +28,9 @@ public class ArmSubsystem extends SubsystemBase {
   private CANSparkMax wrist = new CANSparkMax(50, MotorType.kBrushless);
 
   private DigitalInput limitSwitch = new DigitalInput(0);
-  
-  private PIDController wristPidController = new PIDController(0.25, 0, 0.00001);
-  private PIDController elevatorPidController = new PIDController(0.07, 0, 0.04);
+
+  private PIDController wristPidController = new PIDController(0.135, 0, 0.00015);
+  private PIDController elevatorPidController = new PIDController(0.029, 0.001, 0.003);
 
   private double wristPosition = Constants.Aim.HOME_POSITION;
   private double elevatorPosition = 0;
@@ -51,25 +51,44 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Wrist Angle", wrist.getEncoder().getPosition());
     SmartDashboard.putNumber("rElevator Height", rElevator.getEncoder().getPosition());
     SmartDashboard.putNumber("lElevator Height", lElevator.getEncoder().getPosition());
-    
+
     SmartDashboard.putData("PID Controller", wristPidController);
-
-    //always run the PID controller
-    if(DriverStation.isEnabled()) {
-      wristPidController.setSetpoint(wristPosition);
-      wrist.set(MathUtil.clamp(wristPidController.calculate(wrist.getEncoder().getPosition()), -Constants.Aim.AMP_AIM_SPEED, Constants.Aim.AMP_AIM_SPEED));
-
-      elevatorPidController.setSetpoint(elevatorPosition);
-      lElevator.set(MathUtil.clamp(elevatorPidController.calculate(lElevator.getEncoder().getPosition()), -Constants.Elevator.HOME_SPEED, Constants.Elevator.HOME_SPEED));
-    }
 
 
         SmartDashboard.putNumber("Elevator Setpoint", elevatorPidController.getSetpoint());
-        SmartDashboard.putNumber("Wrist Setpoint", wristPidController.getSetpoint());
+    SmartDashboard.putNumber("Wrist Setpoint", wristPidController.getSetpoint());
+
+    SmartDashboard.putNumber("Wrist Speed", wrist.get());
+    SmartDashboard.putNumber("Elevator Speed", lElevator.get());
+
+    SmartDashboard.putBoolean("Rope Safety Detection", areRopesDetached());
+    // always run the PID controller
+    if (DriverStation.isEnabled()) {
+      if(areRopesDetached()) {
+        lElevator.stopMotor();
+        rElevator.stopMotor();
+        System.out.println("[WARNING] ROPES ARE DETACHED");
+        return;
+      }
+      wristPidController.setSetpoint(wristPosition);
+      wrist.set(MathUtil.clamp(wristPidController.calculate(wrist.getEncoder().getPosition()),
+          -Constants.Aim.AMP_AIM_SPEED, Constants.Aim.AMP_AIM_SPEED));
+
+      elevatorPidController.setSetpoint(elevatorPosition);
+      lElevator.set(MathUtil.clamp(elevatorPidController.calculate(lElevator.getEncoder().getPosition()),
+          -Constants.Elevator.HOME_SPEED, Constants.Elevator.HOME_SPEED));
+    }
 
   }
 
-  //stop everything
+  public boolean shouldMoveWristJoint() {
+    return MathUtil.isNear(elevatorPidController.getSetpoint(), lElevator.getEncoder().getPosition(), 6)  ;
+  }
+  public boolean areRopesDetached() {
+    return Math.abs(lElevator.getEncoder().getPosition() - rElevator.getEncoder().getPosition()) >= 6;
+  }
+
+  // stop everything
   public Command stopEverything() {
     return Commands.runOnce(() -> {
       lElevator.stopMotor();
@@ -81,12 +100,13 @@ public class ArmSubsystem extends SubsystemBase {
       wrist.stopMotor();
     });
   }
+
   public void stopEverythingMethod() {
-      lShooter.stopMotor();
-      rShooter.stopMotor();
-      lFeeder.stopMotor();
-      rFeeder.stopMotor();
-      wrist.stopMotor();
+    lShooter.stopMotor();
+    rShooter.stopMotor();
+    lFeeder.stopMotor();
+    rFeeder.stopMotor();
+    wrist.stopMotor();
   }
 
   public boolean isHomed() {
@@ -104,13 +124,17 @@ public class ArmSubsystem extends SubsystemBase {
   public Command goSlowUp() {
     return Commands.run(() -> {
       wrist.set(Constants.Aim.SLOW_PRECISION_SPEED);
-    }).handleInterrupt(() -> {stopEverythingMethod();});
+    }).handleInterrupt(() -> {
+      stopEverythingMethod();
+    });
   }
 
   public Command goSlowDown() {
     return Commands.run(() -> {
       wrist.set(-Constants.Aim.SLOW_PRECISION_SPEED);
-    }).handleInterrupt(() -> {stopEverythingMethod();});
+    }).handleInterrupt(() -> {
+      stopEverythingMethod();
+    });
   }
 
   public Command intake() {
@@ -125,34 +149,39 @@ public class ArmSubsystem extends SubsystemBase {
       // spin outer wheels to 100 power
       lShooter.set(Constants.Intake.SHOOT_SPEED);
     })
-    .andThen(new WaitCommand(2))
-    .andThen(Commands.runOnce(() -> {
-      lFeeder.set(Constants.Intake.SHOOT_SPEED);
-    }))
-    .andThen(new WaitCommand(2))
-    .andThen(() -> {
-      stopEverythingMethod();
-    });
+        .andThen(new WaitCommand(2))
+        .andThen(Commands.runOnce(() -> {
+          lFeeder.set(Constants.Intake.SHOOT_SPEED);
+        }))
+        .andThen(new WaitCommand(2))
+        .andThen(() -> {
+          stopEverythingMethod();
+        });
   }
 
   public Command dumshoot() {
     return Commands.run(() -> {
       lShooter.set(Constants.Intake.SHOOT_SPEED);
-    }).handleInterrupt(() -> {stopEverythingMethod();});
+    }).handleInterrupt(() -> {
+      stopEverythingMethod();
+    });
   }
 
   public Command dumamp() {
     return Commands.run(() -> {
       lShooter.set(Constants.Intake.AMP_OUTTAKE_SPEED);
       lFeeder.set(-0.7);
-    }).handleInterrupt(() -> {stopEverythingMethod();});
+    }).handleInterrupt(() -> {
+      stopEverythingMethod();
+    });
   }
-  
+
   public Command dumbExtendElevator() {
     return Commands.run(() -> {
       elevatorPosition--;
     });
   }
+
   public Command dumbRetractElevator() {
     return Commands.run(() -> {
       elevatorPosition++;
@@ -160,33 +189,34 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public Command outtake() {
-    return Commands.run(() -> { 
+    return Commands.run(() -> {
       // spin outer wheels to 10 power
       lShooter.set(-Constants.Intake.AMP_OUTTAKE_SPEED);
-            lFeeder.set(-0.7);
+      lFeeder.set(-0.7);
     }).until(() -> {
       return lShooter.getEncoder().getVelocity() < -Constants.Intake.OUTTAKE_VELOCITY;
       // TODO change this value
     })
-    .andThen(Commands.runOnce(() -> {
-      //TODO make a constant
-      System.out.println("running amp outtake");
-    }))
-    .andThen(new WaitCommand(2))
-    .andThen(() -> {
-      System.out.println("we are done with the command");
-      stopEverythingMethod();
-    });
+        .andThen(Commands.runOnce(() -> {
+          // TODO make a constant
+          System.out.println("running amp outtake");
+        }))
+        .andThen(new WaitCommand(2))
+        .andThen(() -> {
+          System.out.println("we are done with the command");
+          stopEverythingMethod();
+        });
   }
-  
+
   public Command moveElevatorTo(double pos) {
     return Commands.runOnce(() -> {
       elevatorPosition = pos;
     });
   }
-  
+
   /**
    * Moves the wrist to a position.
+   * 
    * @param pos the position to go to
    * @return the command to move the wrist
    */
@@ -197,23 +227,15 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public Command scoreAmp() {
-    return  moveWristTo(Constants.Aim.WRIST_ANGLE_AMP).
-            alongWith(moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_AMP)).
-            andThen(outtake()).
-            andThen(new WaitCommand(1)).
-            andThen(stopEverything()).
-            andThen(homeElevator()).
-            alongWith(moveWristTo(0));
+    return moveWristTo(Constants.Aim.WRIST_ANGLE_AMP).alongWith(moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_AMP))
+        .andThen(outtake()).andThen(new WaitCommand(1)).andThen(stopEverything()).andThen(homeElevator())
+        .alongWith(moveWristTo(0));
   }
 
   public Command scoreSpeaker() {
-    return  moveWristTo(Constants.Aim.WRIST_ANGLE_SPEAKER).
-            alongWith(moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SOURCE)).
-            andThen(shoot()).
-            andThen(new WaitCommand(2)).
-            andThen(stopEverything()).
-            andThen(homeElevator()).
-            alongWith(moveWristTo(0));
+    return moveWristTo(Constants.Aim.WRIST_ANGLE_SPEAKER)
+        .alongWith(moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SOURCE)).andThen(shoot()).andThen(new WaitCommand(2))
+        .andThen(stopEverything()).andThen(homeElevator()).alongWith(moveWristTo(0));
   }
-  
+
 }

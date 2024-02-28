@@ -23,6 +23,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.io.File;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+
+import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
+
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveModule;
@@ -129,6 +133,7 @@ public class SwerveSubsystem extends SubsystemBase {
     for(SwerveModule module : swerveDrive.getModules()) {
       module.setAngle(0);
     }
+    
   }
 
   public void zeroGyroWithAlliance() {
@@ -177,7 +182,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command driveToPose(Pose2d pose) {
     // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
-        swerveDrive.getMaximumVelocity(), 4.0,
+        1, 2.0,
         swerveDrive.getMaximumAngularVelocity(), Units.degreesToRadians(720));
 
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
@@ -188,6 +193,26 @@ public class SwerveSubsystem extends SubsystemBase {
         0.0 // Rotation delay distance in meters. This is how far the robot should travel
             // before attempting to rotate.
     );
+  }
+
+  /**
+   * Aim the robot at the target returned by PhotonVision.
+   *
+   * @param camera {@link PhotonCamera} to communicate with.
+   * @return A {@link Command} which will run the alignment.
+   */
+  public Command aimAtTarget(PhotonCamera camera)
+  {
+    return run(() -> {
+      PhotonPipelineResult result = camera.getLatestResult();
+      if (result.hasTargets())
+      {
+        drive(getTargetSpeeds(0,
+                              0,
+                              Rotation2d.fromDegrees(result.getBestTarget()
+                                                           .getYaw()))); // Not sure if this will work, more math may be required.
+      }
+    });
   }
 
   /**
@@ -328,7 +353,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    swerveDrive.updateOdometry();
+    SmartDashboard.putNumber("XPose", swerveDrive.field.getRobotPose().getX());
+    SmartDashboard.putNumber("YPose", swerveDrive.field.getRobotPose().getY());
   }
 
   @Override
