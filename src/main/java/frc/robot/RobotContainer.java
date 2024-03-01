@@ -41,7 +41,7 @@ public class RobotContainer {
   private final ArmSubsystem arm = new ArmSubsystem();
   private final LEDSubsytem ledSubsytem = new LEDSubsytem();
   private final VisionSubsystem visionSubsystem = new VisionSubsystem();
-  //private final ClimbSubsystem climb = new ClimbSubsystem();
+  private final ClimbSubsystem climb = new ClimbSubsystem();
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -83,14 +83,15 @@ public class RobotContainer {
     return pose;
 }
   private void configureBindings() {
-    driverXbox.leftTrigger().whileTrue(drivebase.aimAtTarget(visionSubsystem.getCamera()));
+
     driverXbox.rightBumper().onTrue(new InstantCommand(drivebase::pointModulesForward , drivebase));
     driverXbox.a().onTrue(new InstantCommand(drivebase::lock, drivebase));
     driverXbox.x().onTrue(new InstantCommand(drivebase::zeroGyroWithAlliance, drivebase).ignoringDisable(true));
 
-    driverXbox.b().onTrue(drivebase.driveToPose(new Pose2d(new Translation2d(14.56, 6.56), new Rotation2d(Math.toRadians(90)))).andThen(
-      drivebase.getAutonomousCommand("REDamp", false)
-    ));
+    driverXbox.b().onTrue(
+      drivebase.getAutonomousCommand("Source", false).
+      andThen(getAutonomousCommand()).andThen(Commands.runOnce(drivebase::pointModulesForward, drivebase))
+    );
     // driverXbox.povDown().onTrue(drivebase.driveToPose(new Pose2d(1.89, 7.67, new Rotation2d(Math.toRadians(90)))).
     //                             andThen(arm.scoreAmp()));
     // driverXbox.povUp().onTrue(drivebase.driveToPose(new Pose2d(15.47, 0.89, new Rotation2d(Math.toRadians(-60)))).
@@ -112,8 +113,8 @@ public class RobotContainer {
     oppsController.b().onTrue(arm.moveWristTo(Constants.Aim.HOME_POSITION).andThen(arm.moveElevatorTo(Constants.Aim.HOME_POSITION)));
     //move to source position
     oppsController.y().onTrue(arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SOURCE));
-    //oppsController.leftBumper().whileTrue(climb.goDown().handleInterrupt(climb::stop));
-    //oppsController.rightBumper().whileTrue(climb.goUp().handleInterrupt(climb::stop));
+    oppsController.leftBumper().whileTrue(climb.goDown().handleInterrupt(climb::stop));
+    oppsController.rightBumper().whileTrue(climb.goUp().handleInterrupt(climb::stop));
   }
 
   /**
@@ -123,8 +124,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Commands.runOnce(() -> drivebase.drive(new Translation2d(-1, 0), 0, false),drivebase)
-    .andThen(Commands.waitSeconds(3)).andThen(() -> drivebase.drive(new Translation2d(0, 0), 0, false));
+    return Commands.runOnce(() -> drivebase.drive(new Translation2d(0.4, 0), 0, false),drivebase)
+    .andThen(Commands.waitSeconds(2)).andThen(() -> drivebase.drive(new Translation2d(0, 0), 0, false));
   }
 
   public void setDriveMode() {

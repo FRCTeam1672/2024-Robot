@@ -10,14 +10,15 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class ClimbSubsystem extends SubsystemBase {
-  private CANSparkMax lClimb = new CANSparkMax(31, MotorType.kBrushless);
-  private CANSparkMax rClimb = new CANSparkMax(32, MotorType.kBrushless);
+  private CANSparkMax lClimb = new CANSparkMax(21, MotorType.kBrushless);
+  private CANSparkMax rClimb = new CANSparkMax(22, MotorType.kBrushless);
 
   private PIDController climbPidController = new PIDController(0, 0, 0);
 
@@ -29,10 +30,12 @@ public class ClimbSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("LClimb position", lClimb.getEncoder().getPosition());
+    SmartDashboard.putNumber("RClimb position", rClimb.getEncoder().getPosition());
     // This method will be called once per scheduler run
     if(DriverStation.isEnabled()) {
-      climbPidController.setSetpoint(climbPosition);
-      lClimb.set(MathUtil.clamp(climbPidController.calculate(lClimb.getEncoder().getPosition()), -.3, .3));
+      // climbPidController.setSetpoint(climbPosition);
+      // lClimb.set(MathUtil.clamp(climbPidController.calculate(lClimb.getEncoder().getPosition()), -.3, .3));
     }
   }
 
@@ -48,7 +51,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
   public Command goUp() {
     return Commands.run(() -> {
-      lClimb.set(-.25);
+      lClimb.set(-.75);
     });
   }
 
@@ -60,7 +63,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
   public Command goDown() {
     return Commands.run(() -> {
-      lClimb.set(.25);
+      lClimb.set(.75);
     });
   }
 
