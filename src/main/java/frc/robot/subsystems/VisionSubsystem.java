@@ -11,11 +11,9 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -28,7 +26,7 @@ public class VisionSubsystem extends SubsystemBase {
   private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
   private final PhotonCamera camera = new PhotonCamera("Arducam_OV9281_USB_Camera");
   private final Transform3d robotToCam = new Transform3d(new Translation3d(0.778, 0.285, 0.4), new Rotation3d(0,Math.toRadians(20),0)); //Cam mounted facing forward, half a meter forward of center, half a meter up from center.
-  private final PIDController rController = new PIDController(0.3, 0, 0.001);
+
   // Construct PhotonPoseEstimator
   PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, robotToCam);
   /** Creates a new VisionSubsystem. */
@@ -40,8 +38,8 @@ public class VisionSubsystem extends SubsystemBase {
   public PhotonCamera getCamera() {
     return camera;
   }
-  public Command getSourceAlignCommand(SwerveSubsystem subsystem) {
-    return Commands.none();
+  public Command getAmpAlignCommand() {
+    return Commands.run(null, null);
   }
   @Override
   public void periodic() {

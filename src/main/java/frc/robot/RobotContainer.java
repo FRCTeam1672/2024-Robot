@@ -93,7 +93,7 @@ public class RobotContainer {
 
     driverXbox.b().onTrue(
       drivebase.getAutonomousCommand("Source", false).
-      andThen(getAutonomousCommand())
+      andThen(getAutonomousCommand()).andThen(Commands.runOnce(drivebase::pointModulesForward, drivebase))
     );
     // driverXbox.povDown().onTrue(drivebase.driveToPose(new Pose2d(1.89, 7.67, new Rotation2d(Math.toRadians(90)))).
     //                             andThen(arm.scoreAmp()));
@@ -129,8 +129,6 @@ public class RobotContainer {
     // An example command will be run in autonomous
     return new InstantCommand(drivebase::pointModulesForward , drivebase).andThen(Commands.runOnce(() -> drivebase.drive(new Translation2d(3 , 0), 0, false),drivebase)
     .andThen(Commands.waitSeconds(2)).andThen(() -> drivebase.drive(new Translation2d(0, 0), 0, false)));
-
-    // return drivebase.getAutonomousCommand("AmpAuto", true);
   }
 
   public void setDriveMode() {
