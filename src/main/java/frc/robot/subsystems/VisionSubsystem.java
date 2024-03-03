@@ -18,6 +18,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase {
@@ -35,6 +37,9 @@ public class VisionSubsystem extends SubsystemBase {
   }
   public PhotonCamera getCamera() {
     return camera;
+  }
+  public Command getAmpAlignCommand() {
+    return Commands.run(null, null);
   }
   @Override
   public void periodic() {

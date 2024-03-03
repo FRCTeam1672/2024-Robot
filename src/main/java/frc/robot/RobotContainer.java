@@ -63,7 +63,7 @@ public class RobotContainer {
           else if(DriverStation.getAlliance().get() == Alliance.Blue) return MathUtil.clamp(MathUtil.applyDeadband(-driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1,1);
           else return MathUtil.clamp(MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1,1);
         },
-        () -> {
+        () -> {  
           if(DriverStation.getAlliance().isEmpty()) return 0;
           else if(DriverStation.getAlliance().get() == Alliance.Blue) return MathUtil.clamp(MathUtil.applyDeadband(-driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1,1);
           else return MathUtil.clamp(MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1,1);
@@ -106,7 +106,7 @@ public class RobotContainer {
     //oppsController.x().onTrue(arm.moveWristTo(Constants.Aim.WRIST_ANGLE_AMP));
     oppsController.x().onTrue(arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_AMP).andThen(Commands.waitUntil(arm::shouldMoveWristJoint).andThen(arm.moveWristTo(Constants.Aim.WRIST_ANGLE_AMP))));
     
-    oppsController.a().onTrue(arm.shoot().andThen(new WaitCommand(2)).andThen(arm.stopEverything()));
+    //oppsController.a().onTrue(arm.shoot().andThen(new WaitCommand(2)).andThen(arm.stopEverything()));
     oppsController.povUp().onTrue(arm.outtake().andThen(new WaitCommand(2)).andThen(arm.stopEverything())).onFalse(Commands.run(arm::stopEverything));
 
     //retract everything but keep hovering
@@ -124,8 +124,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Commands.runOnce(() -> drivebase.drive(new Translation2d(0.4, 0), 0, false),drivebase)
-    .andThen(Commands.waitSeconds(2)).andThen(() -> drivebase.drive(new Translation2d(0, 0), 0, false));
+    return new InstantCommand(drivebase::pointModulesForward , drivebase).andThen(Commands.runOnce(() -> drivebase.drive(new Translation2d(3 , 0), 0, false),drivebase)
+    .andThen(Commands.waitSeconds(2)).andThen(() -> drivebase.drive(new Translation2d(0, 0), 0, false)));
   }
 
   public void setDriveMode() {

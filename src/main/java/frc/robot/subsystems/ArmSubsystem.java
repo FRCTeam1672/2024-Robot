@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DSControlWord;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,8 +30,9 @@ public class ArmSubsystem extends SubsystemBase {
 
   private DigitalInput limitSwitch = new DigitalInput(0);
 
-  private PIDController wristPidController = new PIDController(0.135, 0, 0.00015);
-  private PIDController elevatorPidController = new PIDController(0.029, 0.001, 0.003);
+  private PIDController upWristPidController = new PIDController(0.135, 0, 0.00065);
+  private PIDController downWristPidController = new PIDController(0.075, 0, 0.001);
+  private PIDController elevatorPidController = new PIDController(0.027, 0.000, 0.003);
 
   private double wristPosition = Constants.Aim.HOME_POSITION;
   private double elevatorPosition = 0;
@@ -52,11 +54,10 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("rElevator Height", rElevator.getEncoder().getPosition());
     SmartDashboard.putNumber("lElevator Height", lElevator.getEncoder().getPosition());
 
-    SmartDashboard.putData("PID Controller", wristPidController);
+    SmartDashboard.putData("PID Controller", upWristPidController);
 
-
-        SmartDashboard.putNumber("Elevator Setpoint", elevatorPidController.getSetpoint());
-    SmartDashboard.putNumber("Wrist Setpoint", wristPidController.getSetpoint());
+    SmartDashboard.putNumber("Elevator Setpoint", elevatorPidController.getSetpoint());
+    SmartDashboard.putNumber("Wrist Setpoint", upWristPidController.getSetpoint());
 
     SmartDashboard.putNumber("Wrist Speed", wrist.get());
     SmartDashboard.putNumber("Elevator Speed", lElevator.get());
@@ -64,15 +65,21 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Rope Safety Detection", areRopesDetached());
     // always run the PID controller
     if (DriverStation.isEnabled()) {
-      if(areRopesDetached()) {
+      if (areRopesDetached()) {
         lElevator.stopMotor();
         rElevator.stopMotor();
         System.out.println("[WARNING] ROPES ARE DETACHED");
         return;
       }
-      wristPidController.setSetpoint(wristPosition);
-      wrist.set(MathUtil.clamp(wristPidController.calculate(wrist.getEncoder().getPosition()),
-          -Constants.Aim.AMP_AIM_SPEED, Constants.Aim.AMP_AIM_SPEED));
+      upWristPidController.setSetpoint(wristPosition);
+      downWristPidController.setSetpoint(wristPosition);
+      if (wristPosition != Constants.Aim.HOME_POSITION) {
+        wrist.set(MathUtil.clamp(upWristPidController.calculate(wrist.getEncoder().getPosition()),
+            -Constants.Aim.AMP_AIM_SPEED, Constants.Aim.AMP_AIM_SPEED));
+      } else {
+        wrist.set(MathUtil.clamp(downWristPidController.calculate(wrist.getEncoder().getPosition()),
+                    -Constants.Aim.AMP_AIM_SPEED / 3, Constants.Aim.AMP_AIM_SPEED / 3));
+      }
 
       elevatorPidController.setSetpoint(elevatorPosition);
       lElevator.set(MathUtil.clamp(elevatorPidController.calculate(lElevator.getEncoder().getPosition()),
@@ -82,10 +89,11 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public boolean shouldMoveWristJoint() {
-    return MathUtil.isNear(elevatorPidController.getSetpoint(), lElevator.getEncoder().getPosition(), 6)  ;
+    return MathUtil.isNear(elevatorPidController.getSetpoint(), lElevator.getEncoder().getPosition(), 6);
   }
+
   public boolean areRopesDetached() {
-    return Math.abs(lElevator.getEncoder().getPosition() - rElevator.getEncoder().getPosition()) >= 6;
+    return Math.abs(lElevator.getEncoder().getPosition() - rElevator.getEncoder().getPosition()) >= 20;
   }
 
   // stop everything

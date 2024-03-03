@@ -51,7 +51,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
   public Command goUp() {
     return Commands.run(() -> {
-      lClimb.set(-.75);
+      lClimb.set(-1);
     });
   }
 
@@ -63,7 +63,11 @@ public class ClimbSubsystem extends SubsystemBase {
 
   public Command goDown() {
     return Commands.run(() -> {
-      lClimb.set(.75);
+      if (lClimb.getEncoder().getPosition() > 0) {
+        lClimb.stopMotor();
+        return;
+      }
+      lClimb.set(1);
     });
   }
 

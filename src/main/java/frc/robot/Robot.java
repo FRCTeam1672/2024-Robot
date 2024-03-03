@@ -10,6 +10,7 @@ import java.io.IOException;
 import org.photonvision.EstimatedRobotPose;
 import java.util.Optional;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -55,7 +56,8 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-
+    CameraServer.startAutomaticCapture();
+    CameraServer.putVideo("Camera 1", 640, 640);
     // Create a timer to disable motor brake a few seconds after disable. This will
     // let the robot stop
     // immediately when disabled, but then also let it be pushed more
@@ -80,6 +82,7 @@ public class Robot extends TimedRobot {
       m_robotContainer.getDrivebase().addVisionReading(estimatedGlobalPose.get().estimatedPose.toPose2d(),
           estimatedGlobalPose.get().timestampSeconds);
     }
+    SmartDashboard.putBoolean("Enabled", isEnabled());
   }
 
   public static final Pose2d convertToRedSide(Pose2d pose) {
