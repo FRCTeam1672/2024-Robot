@@ -201,19 +201,7 @@ public class ArmSubsystem extends SubsystemBase {
       // spin outer wheels to 10 power
       lShooter.set(-Constants.Intake.AMP_OUTTAKE_SPEED);
       lFeeder.set(-0.7);
-    }).until(() -> {
-      return lShooter.getEncoder().getVelocity() < -Constants.Intake.OUTTAKE_VELOCITY;
-      // TODO change this value
-    })
-        .andThen(Commands.runOnce(() -> {
-          // TODO make a constant
-          System.out.println("running amp outtake");
-        }))
-        .andThen(new WaitCommand(2))
-        .andThen(() -> {
-          System.out.println("we are done with the command");
-          stopEverythingMethod();
-        });
+    }).handleInterrupt(this::stopEverythingMethod);
   }
 
   public Command moveElevatorTo(double pos) {

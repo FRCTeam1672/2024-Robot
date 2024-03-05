@@ -110,7 +110,7 @@ public class RobotContainer {
     oppsController.x().onTrue(arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_AMP).andThen(Commands.waitUntil(arm::shouldMoveWristJoint).andThen(arm.moveWristTo(Constants.Aim.WRIST_ANGLE_AMP))));
     
     //oppsController.a().onTrue(arm.shoot().andThen(new WaitCommand(2)).andThen(arm.stopEverything()));
-    oppsController.povUp().onTrue(arm.outtake().andThen(new WaitCommand(2)).andThen(arm.stopEverything())).onFalse(Commands.run(arm::stopEverything));
+    oppsController.povUp().whileTrue(arm.outtake()).onFalse(Commands.run(arm::stopEverything));
 
     //retract everything but keep hovering
     oppsController.b().onTrue(arm.moveWristTo(Constants.Aim.HOME_POSITION).andThen(arm.moveElevatorTo(Constants.Aim.HOME_POSITION)));
