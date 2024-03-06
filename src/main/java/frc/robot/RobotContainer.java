@@ -59,17 +59,17 @@ public class RobotContainer {
 
     Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
         () -> {
-          // return MathUtil.clamp(MathUtil.applyDeadband(-driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1,1);
-          if(DriverStation.getAlliance().isEmpty()) return 0;
-          else if(DriverStation.getAlliance().get() == Alliance.Blue) return MathUtil.clamp(MathUtil.applyDeadband(-driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1,1);
-          else return MathUtil.clamp(MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1,1);
+          return MathUtil.clamp(MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1,1);
+          // if(DriverStation.getAlliance().isEmpty()) return 0;
+          // else if(DriverStation.getAlliance().get() == Alliance.Blue) return MathUtil.clamp(MathUtil.applyDeadband(-driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1,1);
+          // else return MathUtil.clamp(MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1,1);
         },
         () -> {  
 
-        // return MathUtil.clamp(MathUtil.applyDeadband(-driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1,1);
-          if(DriverStation.getAlliance().isEmpty()) return 0;
-          else if(DriverStation.getAlliance().get() == Alliance.Blue) return MathUtil.clamp(MathUtil.applyDeadband(-driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1,1);
-          else return MathUtil.clamp(MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1,1);
+        return MathUtil.clamp(MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1,1);
+          // if(DriverStation.getAlliance().isEmpty()) return 0;
+          // else if(DriverStation.getAlliance().get() == Alliance.Blue) return MathUtil.clamp(MathUtil.applyDeadband(-driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1,1);
+          // else return MathUtil.clamp(MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1,1);
           
         },
         () -> {
@@ -89,7 +89,7 @@ public class RobotContainer {
 
     driverXbox.rightBumper().onTrue(new InstantCommand(drivebase::pointModulesForward , drivebase));
     driverXbox.a().onTrue(new InstantCommand(drivebase::lock, drivebase));
-    driverXbox.x().onTrue(new InstantCommand(drivebase::zeroGyroWithAlliance, drivebase).ignoringDisable(true));
+    driverXbox.x().onTrue(new InstantCommand(drivebase::zeroGyro, drivebase).ignoringDisable(true));
 
     // driverXbox.b().onTrue(
     //   drivebase.getAutonomousCommand("Source", false).
