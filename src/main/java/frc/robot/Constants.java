@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.util.PIDConstants;
+
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
@@ -64,7 +66,12 @@ public final class Constants
     public static final double AMP_AIM_SPEED = 0.4;
     public static final double SLOW_PRECISION_SPEED = -0.1;
   }
+  public static final class AutonConstants
+  {
 
+    public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.7, 0, 0);
+    public static final PIDConstants ANGLE_PID   = new PIDConstants(0.7, 0, 0.01);
+  }
   public static final class Elevator {
     public static final double HOME_SPEED = 1;
   }

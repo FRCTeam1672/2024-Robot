@@ -127,12 +127,13 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return new InstantCommand(drivebase::pointModulesForward , drivebase).andThen(Commands.runOnce(() -> drivebase.drive(new Translation2d(3 , 0), 0, false),drivebase)
-    .andThen(Commands.waitSeconds(2)).andThen(() -> drivebase.drive(new Translation2d(0, 0), 0, false)));
+    // return new InstantCommand(drivebase::pointModulesForward , drivebase).andThen(Commands.runOnce(() -> drivebase.drive(new Translation2d(3 , 0), 0, false),drivebase)
+    // .andThen(Commands.waitSeconds(2)).andThen(() -> drivebase.drive(new Translation2d(0, 0), 0, false)));
+    return drivebase.getAutonomousCommand("AmpApproach", false);
   }
 
   public void setDriveMode() {
-    // drivebase.setDefaultCommand();
+    // drivebase.setDefaultCommand(); 
   }
 
   // 100% goon activated
