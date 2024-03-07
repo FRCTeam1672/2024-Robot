@@ -184,6 +184,10 @@ public class ArmSubsystem extends SubsystemBase {
     });
   }
 
+  public Command goToAmpPosition() {
+    return moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_AMP).andThen(Commands.waitUntil(this::shouldMoveWristJoint).andThen(moveWristTo(Constants.Aim.WRIST_ANGLE_AMP)));
+  }
+
   public Command dumbExtendElevator() {
     return Commands.run(() -> {
       elevatorPosition--;
@@ -196,12 +200,19 @@ public class ArmSubsystem extends SubsystemBase {
     });
   }
 
+  public Command homeEverything() {
+    return moveWristTo(Constants.Aim.HOME_POSITION).andThen(moveElevatorTo(Constants.Aim.HOME_POSITION));
+  }
+
   public Command outtake() {
     return Commands.run(() -> {
       // spin outer wheels to 10 power
       lShooter.set(-Constants.Intake.AMP_OUTTAKE_SPEED);
       lFeeder.set(-0.7);
     }).handleInterrupt(this::stopEverythingMethod);
+  }
+  public boolean isAtPosition() {
+    return (MathUtil.isNear(elevatorPosition, lElevator.getEncoder().getPosition(), 1)) && (MathUtil.isNear(wristPosition, wrist.getEncoder().getPosition(), 2));
   }
 
   public Command moveElevatorTo(double pos) {

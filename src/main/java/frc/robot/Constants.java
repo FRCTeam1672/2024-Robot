@@ -29,8 +29,8 @@ public final class Constants
   public static final class Auton
   {
 
-    public static final PIDFConfig TranslationPID = new PIDFConfig(0.7, 0, 0);
-    public static final PIDFConfig angleAutoPID   = new PIDFConfig(0.4, 0, 0.01);
+    public static final PIDFConfig TranslationPID = new PIDFConfig(2.5, 0, 0);
+    public static final PIDFConfig angleAutoPID   = new PIDFConfig(0.8, 0, 0);
 
     public static final double MAX_ACCELERATION = 3;
   }
@@ -69,7 +69,7 @@ public final class Constants
   public static final class AutonConstants
   {
 
-    public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.7, 0, 0);
+    public static final PIDConstants TRANSLATION_PID = new PIDConstants(4, 0, 0);
     public static final PIDConstants ANGLE_PID   = new PIDConstants(0.7, 0, 0.01);
   }
   public static final class Elevator {

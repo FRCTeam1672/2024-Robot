@@ -391,10 +391,8 @@ public class SwerveSubsystem extends SubsystemBase {
     ChassisSpeeds speeds = new ChassisSpeeds();
     speeds.omegaRadiansPerSecond = chassisSpeeds.omegaRadiansPerSecond;
     speeds.unaryMinus();
-    System.out.println("before speeds: " + chassisSpeeds.omegaRadiansPerSecond);
     chassisSpeeds.omegaRadiansPerSecond = speeds.omegaRadiansPerSecond;
         chassisSpeeds.omegaRadiansPerSecond = -chassisSpeeds.omegaRadiansPerSecond;
-    System.out.println("after speeds: " + chassisSpeeds.omegaRadiansPerSecond);
     swerveDrive.setChassisSpeeds(chassisSpeeds);
   }
 

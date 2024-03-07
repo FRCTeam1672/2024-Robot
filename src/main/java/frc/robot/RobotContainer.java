@@ -7,6 +7,8 @@ package frc.robot;
 import java.io.File;
 import java.util.Optional;
 
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -55,6 +58,7 @@ public class RobotContainer {
     // right stick controls the angular velocity of the robot
 
     //DoubleSupplier 
+    NamedCommands.registerCommand("scoreAmp", new ProxyCommand(arm.goToAmpPosition()));
 
 
     Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
@@ -91,6 +95,8 @@ public class RobotContainer {
     driverXbox.a().onTrue(new InstantCommand(drivebase::lock, drivebase));
     driverXbox.x().onTrue(new InstantCommand(drivebase::zeroGyro, drivebase).ignoringDisable(true));
 
+    driverXbox.b().onTrue(drivebase.driveToPose(new Pose2d(1.87, 7.72, new Rotation2d(Math.toRadians(85.48)))));
+
     // driverXbox.b().onTrue(
     //   drivebase.getAutonomousCommand("Source", false).
     //   andThen(getAutonomousCommand()).andThen(Commands.runOnce(drivebase::pointModulesForward, drivebase))
@@ -107,13 +113,13 @@ public class RobotContainer {
 
     //amp position
     //oppsController.x().onTrue(arm.moveWristTo(Constants.Aim.WRIST_ANGLE_AMP));
-    oppsController.x().onTrue(arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_AMP).andThen(Commands.waitUntil(arm::shouldMoveWristJoint).andThen(arm.moveWristTo(Constants.Aim.WRIST_ANGLE_AMP))));
+    oppsController.x().onTrue(arm.goToAmpPosition());
     
     //oppsController.a().onTrue(arm.shoot().andThen(new WaitCommand(2)).andThen(arm.stopEverything()));
     oppsController.povUp().whileTrue(arm.outtake()).onFalse(Commands.run(arm::stopEverything));
 
     //retract everything but keep hovering
-    oppsController.b().onTrue(arm.moveWristTo(Constants.Aim.HOME_POSITION).andThen(arm.moveElevatorTo(Constants.Aim.HOME_POSITION)));
+    oppsController.b().onTrue(arm.homeEverything());
     //move to source position
     oppsController.y().onTrue(arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SOURCE));
     oppsController.leftBumper().whileTrue(climb.goDown().handleInterrupt(climb::stop));
@@ -126,10 +132,23 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
+    // An example command will be run in autonomousa
     // return new InstantCommand(drivebase::pointModulesForward , drivebase).andThen(Commands.runOnce(() -> drivebase.drive(new Translation2d(3 , 0), 0, false),drivebase)
     // .andThen(Commands.waitSeconds(2)).andThen(() -> drivebase.drive(new Translation2d(0, 0), 0, false)));
-    return drivebase.getAutonomousCommand("AmpApproach", false);
+    return drivebase.getAutonomousCommand("AmpApproach", false)
+      .andThen(Commands.waitUntil(() -> {
+        return arm.shouldMoveWristJoint() && arm.isAtPosition();
+      })
+      .andThen(arm.outtake()
+        .withTimeout(0.5)
+        .andThen(
+          Commands.parallel(
+              drivebase.getAutonomousCommand("AmpLeave", false),
+              arm.homeEverything()
+          )
+        )
+      
+    ));
   }
 
   public void setDriveMode() {
