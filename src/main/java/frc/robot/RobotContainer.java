@@ -95,7 +95,7 @@ public class RobotContainer {
     driverXbox.a().onTrue(new InstantCommand(drivebase::lock, drivebase));
     driverXbox.x().onTrue(new InstantCommand(drivebase::zeroGyro, drivebase).ignoringDisable(true));
 
-    driverXbox.b().onTrue(drivebase.driveToPose(new Pose2d(1.87, 7.72, new Rotation2d(Math.toRadians(85.48)))));
+    driverXbox.b().onTrue(drivebase.driveToPose(new Pose2d(14.65, 7.62, new Rotation2d(Math.toRadians(90)))));
 
     // driverXbox.b().onTrue(
     //   drivebase.getAutonomousCommand("Source", false).
