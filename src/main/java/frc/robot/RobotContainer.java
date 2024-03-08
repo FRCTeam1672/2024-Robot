@@ -94,9 +94,9 @@ public class RobotContainer {
     driverXbox.rightBumper().onTrue(new InstantCommand(drivebase::pointModulesForward , drivebase));
     driverXbox.a().onTrue(new InstantCommand(drivebase::lock, drivebase));
     driverXbox.x().onTrue(new InstantCommand(drivebase::zeroGyro, drivebase).ignoringDisable(true));
-    
+
+    driverXbox.povUp().onTrue(drivebase.driveToPose(new Pose2d(14, 5.48, new Rotation2d(Math.toRadians(0)))));
     driverXbox.y().onTrue(drivebase.driveToPose(new Pose2d(1.75, 0.79, new Rotation2d(Math.toRadians(-119)))));
-    // driverXbox.y().onTrue(drivebase.driveToPose(new Pose2d(1.75, 0.79, new Rotation2d(Math.toRadians(-119)))));
     driverXbox.b().onTrue(drivebase.driveToPose(new Pose2d(14.65, 7.57, new Rotation2d(Math.toRadians(90)))).
         andThen(arm.goToAmpPosition()
         .andThen( 
@@ -125,7 +125,7 @@ public class RobotContainer {
     //oppsController.x().onTrue(arm.moveWristTo(Constants.Aim.WRIST_ANGLE_AMP));
     oppsController.x().onTrue(arm.goToAmpPosition());
     
-    //oppsController.a().onTrue(arm.shoot().andThen(new WaitCommand(2)).andThen(arm.stopEverything()));
+    oppsController.a().onTrue(arm.shoot().andThen(new WaitCommand(2)).andThen(arm.stopEverything()));
     oppsController.povUp().whileTrue(arm.outtake()).onFalse(Commands.run(arm::stopEverything));
 
     //retract everything but keep hovering
