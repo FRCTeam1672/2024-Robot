@@ -212,7 +212,7 @@ public class ArmSubsystem extends SubsystemBase {
     }).handleInterrupt(this::stopEverythingMethod);
   }
   public boolean isAtPosition() {
-    return (MathUtil.isNear(elevatorPosition, lElevator.getEncoder().getPosition(), 1)) && (MathUtil.isNear(wristPosition, wrist.getEncoder().getPosition(), 2));
+    return (MathUtil.isNear(elevatorPosition, lElevator.getEncoder().getPosition(), 2)) && (MathUtil.isNear(wristPosition, wrist.getEncoder().getPosition(), 2));
   }
 
   public Command moveElevatorTo(double pos) {
