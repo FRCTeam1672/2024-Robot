@@ -94,8 +94,10 @@ public class RobotContainer {
     driverXbox.rightBumper().onTrue(new InstantCommand(drivebase::pointModulesForward , drivebase));
     driverXbox.a().onTrue(new InstantCommand(drivebase::lock, drivebase));
     driverXbox.x().onTrue(new InstantCommand(drivebase::zeroGyro, drivebase).ignoringDisable(true));
+    
     driverXbox.y().onTrue(drivebase.driveToPose(new Pose2d(1.75, 0.79, new Rotation2d(Math.toRadians(-119)))));
-    driverXbox.b().onTrue(drivebase.driveToPose(new Pose2d(14.65, 7.62, new Rotation2d(Math.toRadians(90)))).
+    // driverXbox.y().onTrue(drivebase.driveToPose(new Pose2d(1.75, 0.79, new Rotation2d(Math.toRadians(-119)))));
+    driverXbox.b().onTrue(drivebase.driveToPose(new Pose2d(14.65, 7.57, new Rotation2d(Math.toRadians(90)))).
         andThen(arm.goToAmpPosition()
         .andThen( 
           Commands.waitUntil(() -> {

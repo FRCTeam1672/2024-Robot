@@ -61,7 +61,7 @@ public final class Constants
     public static final double HOME_POSITION = -1.6; 
     public static final double WRIST_ANGLE_AMP = -17;
     public static final double WRIST_ANGLE_SPEAKER = HOME_POSITION; //asgfawieasfafeawefawefaergjuwGAWEFLIHAEGIUAHERGIAEHGAEIGUHAFJBASDJBADJFASDJLGHASDIFLAEIULAIWULHGIAUEHFKASDHFGJKADHG
-    public static final double ELEVATOR_HEIGHT_AMP = -81;
+    public static final double ELEVATOR_HEIGHT_AMP = -80.5;
     public static final double ELEVATOR_HEIGHT_SOURCE = -69;//aksefhawefhGPUIeqehrghquierghuieqrhghadfjkghkadghuishguhsekgjhsdjkfghadughauighlafklahawilawlegaagalalkgaelg
     public static final double AMP_AIM_SPEED = 0.4;
     public static final double SLOW_PRECISION_SPEED = -0.1;
