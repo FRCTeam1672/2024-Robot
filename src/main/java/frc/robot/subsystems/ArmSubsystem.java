@@ -32,14 +32,15 @@ public class ArmSubsystem extends SubsystemBase {
 
   private PIDController upWristPidController = new PIDController(0.135, 0, 0.00065);
   private PIDController downWristPidController = new PIDController(0.075, 0, 0.001);
-  private PIDController elevatorPidController = new PIDController(0.027, 0.000, 0.003);
+  private PIDController leftElevatorPidController = new PIDController(0.027, 0.000, 0.003);
+  private PIDController rightElevatorPidController = new PIDController(0.027, 0.000, 0.003);
 
   private double wristPosition = Constants.Aim.HOME_POSITION;
   private double elevatorPosition = 0;
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
-    rElevator.follow(lElevator, true);
+    // rElevator.follow(lElevator, true);
     rShooter.follow(lShooter, true);
     rFeeder.follow(lFeeder, true);
   }
@@ -56,7 +57,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     SmartDashboard.putData("PID Controller", upWristPidController);
 
-    SmartDashboard.putNumber("Elevator Setpoint", elevatorPidController.getSetpoint());
+    SmartDashboard.putNumber("Elevator Setpoint", leftElevatorPidController.getSetpoint());
     SmartDashboard.putNumber("Wrist Setpoint", upWristPidController.getSetpoint());
 
     SmartDashboard.putNumber("Wrist Speed", wrist.get());
@@ -81,15 +82,17 @@ public class ArmSubsystem extends SubsystemBase {
                     -Constants.Aim.AMP_AIM_SPEED / 3, Constants.Aim.AMP_AIM_SPEED / 3));
       }
 
-      elevatorPidController.setSetpoint(elevatorPosition);
-      lElevator.set(MathUtil.clamp(elevatorPidController.calculate(lElevator.getEncoder().getPosition()),
+      leftElevatorPidController.setSetpoint(elevatorPosition);
+      lElevator.set(MathUtil.clamp(leftElevatorPidController.calculate(lElevator.getEncoder().getPosition()),
+          -Constants.Elevator.HOME_SPEED, Constants.Elevator.HOME_SPEED));
+      rElevator.set(-MathUtil.clamp(rightElevatorPidController.calculate(rElevator.getEncoder().getPosition()),
           -Constants.Elevator.HOME_SPEED, Constants.Elevator.HOME_SPEED));
     }
 
   }
 
   public boolean shouldMoveWristJoint() {
-    return MathUtil.isNear(elevatorPidController.getSetpoint(), lElevator.getEncoder().getPosition(), 6);
+    return MathUtil.isNear(leftElevatorPidController.getSetpoint(), lElevator.getEncoder().getPosition(), 6);
   }
 
   public boolean areRopesDetached() {

@@ -96,15 +96,16 @@ public class RobotContainer {
     driverXbox.x().onTrue(new InstantCommand(drivebase::zeroGyro, drivebase).ignoringDisable(true));
 
     driverXbox.povUp().onTrue(drivebase.driveToPose(new Pose2d(14, 5.48, new Rotation2d(Math.toRadians(0)))));
-    driverXbox.y().onTrue(drivebase.driveToPose(new Pose2d(1.75, 0.79, new Rotation2d(Math.toRadians(-119)))));
-    driverXbox.b().onTrue(drivebase.pathFindAndAutoCommand("AmpAlign").
+      driverXbox.a().whileTrue(drivebase.pathFindAndAutoCommand("Source Align").andThen(arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SOURCE)));
+    driverXbox.y().whileTrue(drivebase.pathFindAndAutoCommand("AmpAlign").
         andThen(arm.goToAmpPosition()
-        .andThen( 
+        .andThen(
           Commands.waitUntil(() -> {
             return arm.shouldMoveWristJoint() && arm.isAtPosition();
           })
           .andThen(arm.outtake()).withTimeout(2.5).andThen(arm.homeEverything())
         ))
+        .handleInterrupt(arm::stopEverythingMethod)
       );  
 
     // driverXbox.b().onTrue(
@@ -123,7 +124,9 @@ public class RobotContainer {
 
     //amp position
     //oppsController.x().onTrue(arm.moveWristTo(Constants.Aim.WRIST_ANGLE_AMP));
-    oppsController.x().onTrue(arm.goToAmpPosition());
+    //oppsController.x().onTrue(arm.goToAmpPosition());
+
+    oppsController.x().onTrue(arm.moveElevatorTo(-90));
     
     oppsController.a().onTrue(arm.shoot().andThen(new WaitCommand(2)).andThen(arm.stopEverything()));
     oppsController.povUp().whileTrue(arm.outtake()).onFalse(Commands.run(arm::stopEverything));
