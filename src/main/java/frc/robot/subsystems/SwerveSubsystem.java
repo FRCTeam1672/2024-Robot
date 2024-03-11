@@ -81,7 +81,7 @@ public class SwerveSubsystem extends SubsystemBase {
       throw new RuntimeException(e);
     }
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via
-                                            // angle.
+                                             // angle.
 
     setupPathPlanner();
   }
@@ -101,38 +101,39 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public void setupPathPlanner() {
     AutoBuilder.configureHolonomic(
-      this::getPose, // Robot pose supplier
-      this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-      this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-      this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-      new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                                       AutonConstants.TRANSLATION_PID,
-                                       // Translation PID constants
-                                       AutonConstants.ANGLE_PID,
-                                       // Rotation PID constants
-                                       4.5,
-                                       // Max module speed, in m/s
-                                       swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
-                                       // Drive base radius in meters. Distance from robot center to furthest module.
-                                       new ReplanningConfig()
-                                       // Default path replanning config. See the API for the options here
-      ),
-      () -> {
-        // Boolean supplier that controls when the path will be mirrored for the red alliance
-        // This will flip the path being followed to the red side of the field.
-        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-        var alliance = DriverStation.getAlliance();
-        return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
-      },
-      this // Reference to this subsystem to set requirements
-      );
+        this::getPose, // Robot pose supplier
+        this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+        this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+            AutonConstants.TRANSLATION_PID,
+            // Translation PID constants
+            AutonConstants.ANGLE_PID,
+            // Rotation PID constants
+            4.5,
+            // Max module speed, in m/s
+            swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
+            // Drive base radius in meters. Distance from robot center to furthest module.
+            new ReplanningConfig()
+        // Default path replanning config. See the API for the options here
+        ),
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red
+          // alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+          var alliance = DriverStation.getAlliance();
+          return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
+        },
+        this // Reference to this subsystem to set requirements
+    );
   }
 
   public void pointModulesForward() {
-    for(SwerveModule module : swerveDrive.getModules()) {
+    for (SwerveModule module : swerveDrive.getModules()) {
       module.setAngle(0);
     }
-    
+
   }
 
   private boolean isRedAlliance() {
@@ -168,6 +169,16 @@ public class SwerveSubsystem extends SubsystemBase {
    * @param pose Target {@link Pose2d} to go to.
    * @return PathFinding command
    */
+
+  public Command pathFindAndAutoCommand(String autoName) {
+    PathPlannerPath path = PathPlannerPath.fromPathFile(autoName);
+    PathConstraints constraints = new PathConstraints(
+        1, 2.0,
+        swerveDrive.getMaximumAngularVelocity(), Units.degreesToRadians(720));
+
+    return AutoBuilder.pathfindThenFollowPath(path, constraints);
+  }
+
   public Command driveToPose(Pose2d pose) {
     // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
@@ -190,16 +201,14 @@ public class SwerveSubsystem extends SubsystemBase {
    * @param camera {@link PhotonCamera} to communicate with.
    * @return A {@link Command} which will run the alignment.
    */
-  public Command aimAtTarget(PhotonCamera camera)
-  {
+  public Command aimAtTarget(PhotonCamera camera) {
     return run(() -> {
       PhotonPipelineResult result = camera.getLatestResult();
-      if (result.hasTargets())
-      {
+      if (result.hasTargets()) {
         drive(getTargetSpeeds(0,
-                              0,
-                              Rotation2d.fromDegrees(result.getBestTarget()
-                                                           .getYaw()))); // Not sure if this will work, more math may be required.
+            0,
+            Rotation2d.fromDegrees(result.getBestTarget()
+                .getYaw()))); // Not sure if this will work, more math may be required.
       }
     });
   }
@@ -392,7 +401,7 @@ public class SwerveSubsystem extends SubsystemBase {
     speeds.omegaRadiansPerSecond = chassisSpeeds.omegaRadiansPerSecond;
     speeds.unaryMinus();
     chassisSpeeds.omegaRadiansPerSecond = speeds.omegaRadiansPerSecond;
-        chassisSpeeds.omegaRadiansPerSecond = -chassisSpeeds.omegaRadiansPerSecond;
+    chassisSpeeds.omegaRadiansPerSecond = -chassisSpeeds.omegaRadiansPerSecond;
     swerveDrive.setChassisSpeeds(chassisSpeeds);
   }
 

@@ -45,7 +45,7 @@ public final class Constants
   public static final class Intake {
     // its not about speed its about power (speed = power)
     public static final class INTAKE_SPEEDS {
-      public static final double FEEDER_INTAKE_SPEED = 0.4;
+      public static final double FEEDER_INTAKE_SPEED = 0.48;
       public static final double SHOOTER_INTAKE_SPEED = 0.1;
     }
     public static final double AMP_OUTTAKE_SPEED = 0.3;
@@ -62,7 +62,7 @@ public final class Constants
     public static final double WRIST_ANGLE_AMP = -17;
     public static final double WRIST_ANGLE_SPEAKER = HOME_POSITION; //asgfawieasfafeawefawefaergjuwGAWEFLIHAEGIUAHERGIAEHGAEIGUHAFJBASDJBADJFASDJLGHASDIFLAEIULAIWULHGIAUEHFKASDHFGJKADHG
     public static final double ELEVATOR_HEIGHT_AMP = -80.5;
-    public static final double ELEVATOR_HEIGHT_SOURCE = -69;//aksefhawefhGPUIeqehrghquierghuieqrhghadfjkghkadghuishguhsekgjhsdjkfghadughauighlafklahawilawlegaagalalkgaelg
+    public static final double ELEVATOR_HEIGHT_SOURCE = -90;//aksefhawefhGPUIeqehrghquierghuieqrhghadfjkghkadghuishguhsekgjhsdjkfghadughauighlafklahawilawlegaagalalkgaelg
     public static final double AMP_AIM_SPEED = 0.4;
     public static final double SLOW_PRECISION_SPEED = -0.1;
   }

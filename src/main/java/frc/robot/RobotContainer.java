@@ -97,7 +97,7 @@ public class RobotContainer {
 
     driverXbox.povUp().onTrue(drivebase.driveToPose(new Pose2d(14, 5.48, new Rotation2d(Math.toRadians(0)))));
     driverXbox.y().onTrue(drivebase.driveToPose(new Pose2d(1.75, 0.79, new Rotation2d(Math.toRadians(-119)))));
-    driverXbox.b().onTrue(drivebase.driveToPose(new Pose2d(14.65, 7.57, new Rotation2d(Math.toRadians(90)))).
+    driverXbox.b().onTrue(drivebase.pathFindAndAutoCommand("AmpAlign").
         andThen(arm.goToAmpPosition()
         .andThen( 
           Commands.waitUntil(() -> {
