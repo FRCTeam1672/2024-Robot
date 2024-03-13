@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -39,7 +40,7 @@ import frc.robot.subsystems.VisionSubsystem;
 public class RobotContainer {
   private final SwerveSubsystem drivebase = new SwerveSubsystem(
       new File(Filesystem.getDeployDirectory(), "swerve/neo"));
-  private final CommandPS5Controller driverPS5 = new CommandPS5Controller(0);
+  private final CommandJoystick driverPS5 = new CommandJoystick(0);
   private final CommandXboxController oppsController = new CommandXboxController(1);
   private final ArmSubsystem arm = new ArmSubsystem();
   private final LEDSubsytem ledSubsytem = new LEDSubsytem();
@@ -63,23 +64,23 @@ public class RobotContainer {
 
     Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
         () -> {
-          return MathUtil.clamp(MathUtil.applyDeadband(driverPS5.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1,1);
+          return MathUtil.clamp(MathUtil.applyDeadband(driverPS5.getY(), OperatorConstants.LEFT_Y_DEADBAND), -1,1);
           // if(DriverStation.getAlliance().isEmpty()) return 0;
           // else if(DriverStation.getAlliance().get() == Alliance.Blue) return MathUtil.clamp(MathUtil.applyDeadband(-driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1,1);
           // else return MathUtil.clamp(MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1,1);
         },
         () -> {  
 
-        return MathUtil.clamp(MathUtil.applyDeadband(driverPS5.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1,1);
+        return MathUtil.clamp(MathUtil.applyDeadband(driverPS5.getX(), OperatorConstants.LEFT_X_DEADBAND), -1,1);
           // if(DriverStation.getAlliance().isEmpty()) return 0;
           // else if(DriverStation.getAlliance().get() == Alliance.Blue) return MathUtil.clamp(MathUtil.applyDeadband(-driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1,1);
           // else return MathUtil.clamp(MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1,1);
           
         },
         () -> {
-          return driverPS5.getRightX();
+          return driverPS5.getZ();
         }, 
-        () -> driverPS5.L1().getAsBoolean());
+        () -> driverPS5.button(1).getAsBoolean());
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     // drivebase.setDefaultCommand(closedAbsoluteDrive);  
@@ -91,18 +92,19 @@ public class RobotContainer {
 }
   private void configureBindings() {
 
-    driverPS5.R1().onTrue(new InstantCommand(drivebase::pointModulesForward , drivebase));
-    // driverXbox.cross().onTrue(new InstantCommand(drivebase::lock, drivebase));
-    driverPS5.square().onTrue(new InstantCommand(drivebase::zeroGyro, drivebase).ignoringDisable(true));
-    driverPS5.povUp().onTrue(drivebase.driveToPose(new Pose2d(14, 5.48, new Rotation2d(Math.toRadians(0)))));
-      driverPS5.cross().whileTrue(drivebase.pathFindAndAutoCommand("Source Align").andThen(arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SOURCE)));
-    driverPS5.triangle().whileTrue(drivebase.pathFindAndAutoCommand("AmpAlign").
+    // driverPS5.R1().onTrue(new InstantCommand(drivebase::pointModulesForward , drivebase));
+    // // driverXbox.cross().onTrue(new InstantCommand(drivebase::lock, drivebase));
+    // driverPS5.square().onTrue(new InstantCommand(drivebase::zeroGyro, drivebase).ignoringDisable(true));
+    // driverPS5.povUp().onTrue(drivebase.driveToPose(new Pose2d(14, 5.48, new Rotation2d(Math.toRadians(0)))));
+    driverPS5.button(4).whileTrue(drivebase.pathFindAndAutoCommand("Source Align").andThen(arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SOURCE)));
+    driverPS5.button(3).whileTrue(drivebase.pathFindAndAutoCommand("AmpAlign").
         andThen(arm.goToAmpPosition()
         .andThen(
           Commands.waitUntil(() -> {
             return arm.shouldMoveWristJoint() && arm.isAtPosition();
           })
-          .andThen(arm.outtake()).withTimeout(2.5).andThen(arm.homeEverything())
+          .andThen(arm.outtake()).withTimeout(1.5).andThen(arm.homeEverything())
+          .handleInterrupt(arm::stopEverythingMethod)
         ))
         .handleInterrupt(arm::stopEverythingMethod)
       );  
@@ -147,7 +149,7 @@ public class RobotContainer {
     // An example command will be run in autonomousa
     // return new InstantCommand(drivebase::pointModulesForward , drivebase).andThen(Commands.runOnce(() -> drivebase.drive(new Translation2d(3 , 0), 0, false),drivebase)
     // .andThen(Commands.waitSeconds(2)).andThen(() -> drivebase.drive(new Translation2d(0, 0), 0, false)));
-    return drivebase.getAutonomousCommand("AmpApproach", false)
+    return drivebase.getAutonomousCommand("AmpAmpApproach", false)
       .andThen(Commands.waitUntil(() -> {
         return arm.shouldMoveWristJoint() && arm.isAtPosition();
       })

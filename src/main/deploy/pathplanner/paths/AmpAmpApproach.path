@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.0673882886227328,
-        "y": 3.956644067134288
+        "x": 0.7417791758660457,
+        "y": 6.9956624528633675
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8138371661358716,
-        "y": 3.838240753404584
+        "x": 2.113284226568455,
+        "y": 5.4564193743772105
       },
       "isLocked": false,
       "linkedName": null
@@ -20,8 +20,8 @@
         "y": 7.72
       },
       "prevControl": {
-        "x": 1.8666106562982372,
-        "y": 5.939899572106838
+        "x": 1.9850139700279412,
+        "y": 5.505754088431254
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,23 +30,12 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.3,
-      "rotationDegrees": 112.71784258990749,
+      "waypointRelativePos": 0.75,
+      "rotationDegrees": 145.9903354664646,
       "rotateFast": false
     }
   ],
   "constraintZones": [
-    {
-      "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.8,
-      "maxWaypointRelativePos": 1,
-      "constraints": {
-        "maxVelocity": 1.0,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0
-      }
-    },
     {
       "name": "New Constraints Zone",
       "minWaypointRelativePos": 0.95,
@@ -62,7 +51,7 @@
   "eventMarkers": [
     {
       "name": "Amp Approach",
-      "waypointRelativePos": 0.65,
+      "waypointRelativePos": 0.75,
       "command": {
         "type": "sequential",
         "data": {
@@ -79,7 +68,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.0,
+    "maxVelocity": 0.5,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
@@ -92,7 +81,7 @@
   "reversed": false,
   "folder": "Amp",
   "previewStartingState": {
-    "rotation": 121.42956561483855,
+    "rotation": -120.14138555207538,
     "velocity": 0
   },
   "useDefaultConstraints": false
