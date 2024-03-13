@@ -66,7 +66,7 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("LElevator Speed", lElevator.get());
     SmartDashboard.putNumber("RElevator Speed", rElevator.get());
 
-    SmartDashboard.putBoolean("Rope Safety Detection", !areRopesDetached());
+    SmartDashboard.putBoolean("Ropes OK", !areRopesDetached());
     // always run the PID controller
     if (DriverStation.isEnabled()) {
       if (areRopesDetached()) {
