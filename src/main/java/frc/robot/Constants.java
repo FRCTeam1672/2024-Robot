@@ -63,7 +63,7 @@ public final class Constants
     public static final double WRIST_ANGLE_SPEAKER = HOME_POSITION; //asgfawieasfafeawefawefaergjuwGAWEFLIHAEGIUAHERGIAEHGAEIGUHAFJBASDJBADJFASDJLGHASDIFLAEIULAIWULHGIAUEHFKASDHFGJKADHG
     public static final double ELEVATOR_HEIGHT_AMP = -80.5;
     public static final double ELEVATOR_HEIGHT_SOURCE = -69;//aksefhawefhGPUIeqehrghquierghuieqrhghadfjkghkadghuishguhsekgjhsdjkfghadughauighlafklahawilawlegaagalalkgaelg
-    public static final double WRIST_SPEED = 0.45;
+    public static final double WRIST_SPEED = 0.5;
     public static final double SLOW_PRECISION_SPEED = -0.1;
   }
   public static final class AutonConstants
