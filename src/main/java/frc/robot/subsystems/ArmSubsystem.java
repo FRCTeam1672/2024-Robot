@@ -92,7 +92,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public boolean isIntaked() {
-    return lFeeder.get() < 0.0;
+    return lFeeder.get() > 0.0;
     // && lFeeder.getEncoder().getVelocity() > -2000
   }
 

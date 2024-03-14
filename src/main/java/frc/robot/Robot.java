@@ -56,7 +56,7 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    CameraServer.startAutomaticCapture();
+    //CameraServer.startAutomaticCapture();
     //baguette
     // Create a timer to disable motor brake a few seconds after disable. This will
     // let the robot stop

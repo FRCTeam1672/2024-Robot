@@ -41,7 +41,7 @@ public class RobotContainer {
   private final SwerveSubsystem drivebase = new SwerveSubsystem(
       new File(Filesystem.getDeployDirectory(), "swerve/neo"));
   private final CommandJoystick driverPS5 = new CommandJoystick(0);
-  private final CommandXboxController oppsController = new CommandXboxController(1);
+  private final CommandPS5Controller oppsController = new CommandPS5Controller(1);
   private final ArmSubsystem arm = new ArmSubsystem();
   private final LEDSubsytem ledSubsytem = new LEDSubsytem();
   private final VisionSubsystem visionSubsystem = new VisionSubsystem();
@@ -127,17 +127,17 @@ public class RobotContainer {
     //oppsController.x().onTrue(arm.moveWristTo(Constants.Aim.WRIST_ANGLE_AMP));
     //oppsController.x().onTrue(arm.goToAmpPosition());
 
-    oppsController.x().onTrue(arm.moveElevatorTo(-90));
+    oppsController.square().onTrue(arm.moveElevatorTo(-90));
     
-    oppsController.a().onTrue(arm.shoot().andThen(new WaitCommand(2)).andThen(arm.stopEverything()));
+    oppsController.cross().onTrue(arm.shoot().andThen(new WaitCommand(2)).andThen(arm.stopEverything()));
     oppsController.povUp().whileTrue(arm.outtake()).onFalse(Commands.run(arm::stopEverything));
 
     //retract everything but keep hovering
-    oppsController.b().onTrue(arm.homeEverything());
+    oppsController.circle().onTrue(arm.homeEverything());
     //move to source position
-    oppsController.y().onTrue(arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SOURCE));
-    oppsController.leftBumper().whileTrue(climb.goDown().handleInterrupt(climb::stop));
-    oppsController.rightBumper().whileTrue(climb.goUp().handleInterrupt(climb::stop));
+    oppsController.triangle().onTrue(arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SOURCE));
+    oppsController.L1().whileTrue(climb.goDown().handleInterrupt(climb::stop));
+    oppsController.R1().whileTrue(climb.goUp().handleInterrupt(climb::stop));
   }
 
   /**

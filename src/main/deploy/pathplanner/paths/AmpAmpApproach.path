@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7417791758660457,
-        "y": 6.9956624528633675
+        "x": 1.5508684863523587,
+        "y": 6.778589711025576
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.113284226568455,
-        "y": 5.4564193743772105
+        "x": 2.034348684081985,
+        "y": 7.094331880971454
       },
       "isLocked": false,
       "linkedName": null
@@ -20,21 +20,15 @@
         "y": 7.72
       },
       "prevControl": {
-        "x": 1.9850139700279412,
-        "y": 5.505754088431254
+        "x": 1.738340399757724,
+        "y": 6.956194681620133
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.75,
-      "rotationDegrees": 145.9903354664646,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
@@ -51,7 +45,7 @@
   "eventMarkers": [
     {
       "name": "Amp Approach",
-      "waypointRelativePos": 0.75,
+      "waypointRelativePos": 0.2,
       "command": {
         "type": "sequential",
         "data": {
@@ -81,7 +75,7 @@
   "reversed": false,
   "folder": "Amp",
   "previewStartingState": {
-    "rotation": -120.14138555207538,
+    "rotation": -131.76029970389789,
     "velocity": 0
   },
   "useDefaultConstraints": false
