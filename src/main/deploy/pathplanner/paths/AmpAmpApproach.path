@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5508684863523587,
-        "y": 6.778589711025576
+        "x": 1.4620660010550806,
+        "y": 6.867392196322855
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.034348684081985,
-        "y": 7.094331880971454
+        "x": 1.7284734569469153,
+        "y": 6.896993024755281
       },
       "isLocked": false,
       "linkedName": null
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 1.8567437134874287,
-        "y": 7.72
+        "y": 7.785017877728063
       },
       "prevControl": {
-        "x": 1.738340399757724,
-        "y": 6.956194681620133
+        "x": 1.8863445419198548,
+        "y": 7.252202965944393
       },
       "nextControl": null,
       "isLocked": false,
@@ -35,7 +35,7 @@
       "minWaypointRelativePos": 0.95,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 0.5,
+        "maxVelocity": 0.45,
         "maxAcceleration": 7.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
@@ -44,8 +44,8 @@
   ],
   "eventMarkers": [
     {
-      "name": "Amp Approach",
-      "waypointRelativePos": 0.2,
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.45,
       "command": {
         "type": "sequential",
         "data": {
@@ -63,7 +63,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 0.5,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 4.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },

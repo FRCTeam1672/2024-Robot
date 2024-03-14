@@ -1,0 +1,68 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.8962114847306633,
+        "y": 7.548211250268655
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.080244622027707,
+        "y": 7.114065766593072
+      },
+      "isLocked": false,
+      "linkedName": "ampPos"
+    },
+    {
+      "anchor": {
+        "x": 3.6821281334870375,
+        "y": 7.005529395674177
+      },
+      "prevControl": {
+        "x": 3.7154859326615375,
+        "y": 7.2247377902494625
+      },
+      "nextControl": {
+        "x": 3.474922334460055,
+        "y": 5.6438912877825755
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.35,
+        "y": 2.7824778726480535
+      },
+      "prevControl": {
+        "x": 3.3762529063519677,
+        "y": 3.5422324690803233
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 119.67848992513521,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "Amp Leave",
+  "previewStartingState": {
+    "rotation": 89.99999999966431,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

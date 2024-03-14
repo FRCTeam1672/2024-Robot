@@ -109,6 +109,10 @@ public class RobotContainer {
         .handleInterrupt(arm::stopEverythingMethod)
       );  
 
+    driverPS5.circle().onTrue(arm.homeEverything());
+    driverPS5.povDown().whileTrue(arm.intake()).onFalse(Commands.run(arm::stopEverything));
+
+
     // driverXbox.b().onTrue(
     //   drivebase.getAutonomousCommand("Source", false).
     //   andThen(getAutonomousCommand()).andThen(Commands.runOnce(drivebase::pointModulesForward, drivebase))
@@ -157,7 +161,7 @@ public class RobotContainer {
         .withTimeout(0.5)
         .andThen(
           Commands.parallel(
-              drivebase.getAutonomousCommand("AmpLeave", false),
+              drivebase.getAutonomousCommand("AmpNotes", false),
               arm.homeEverything()
           )
         )
