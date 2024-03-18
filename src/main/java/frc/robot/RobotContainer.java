@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+
 import java.io.File;
 import java.util.Optional;
 
@@ -46,6 +47,7 @@ public class RobotContainer {
   private final LEDSubsytem ledSubsytem = new LEDSubsytem();
   private final VisionSubsystem visionSubsystem = new VisionSubsystem();
   private final ClimbSubsystem climb = new ClimbSubsystem();
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -58,87 +60,101 @@ public class RobotContainer {
     // left stick controls translation
     // right stick controls the angular velocity of the robot
 
-    //DoubleSupplier 
+    // DoubleSupplier
     NamedCommands.registerCommand("scoreAmp", new ProxyCommand(arm.goToAmpPosition()));
-
 
     Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
         () -> {
-          return MathUtil.clamp(MathUtil.applyDeadband(driverPS5.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1,1);
+          return MathUtil.clamp(MathUtil.applyDeadband(driverPS5.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1, 1);
           // if(DriverStation.getAlliance().isEmpty()) return 0;
-          // else if(DriverStation.getAlliance().get() == Alliance.Blue) return MathUtil.clamp(MathUtil.applyDeadband(-driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1,1);
-          // else return MathUtil.clamp(MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1,1);
+          // else if(DriverStation.getAlliance().get() == Alliance.Blue) return
+          // MathUtil.clamp(MathUtil.applyDeadband(-driverXbox.getLeftY(),
+          // OperatorConstants.LEFT_Y_DEADBAND), -1,1);
+          // else return MathUtil.clamp(MathUtil.applyDeadband(driverXbox.getLeftY(),
+          // OperatorConstants.LEFT_Y_DEADBAND), -1,1);
         },
-        () -> {  
+        () -> {
 
-        return MathUtil.clamp(MathUtil.applyDeadband(driverPS5.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1,1);
+          return MathUtil.clamp(MathUtil.applyDeadband(driverPS5.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1, 1);
           // if(DriverStation.getAlliance().isEmpty()) return 0;
-          // else if(DriverStation.getAlliance().get() == Alliance.Blue) return MathUtil.clamp(MathUtil.applyDeadband(-driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1,1);
-          // else return MathUtil.clamp(MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1,1);
-          
+          // else if(DriverStation.getAlliance().get() == Alliance.Blue) return
+          // MathUtil.clamp(MathUtil.applyDeadband(-driverXbox.getLeftX(),
+          // OperatorConstants.LEFT_X_DEADBAND), -1,1);
+          // else return MathUtil.clamp(MathUtil.applyDeadband(driverXbox.getLeftX(),
+          // OperatorConstants.LEFT_X_DEADBAND), -1,1);
+
         },
         () -> {
           return driverPS5.getRightX();
-        }, 
+        },
         () -> driverPS5.R1().getAsBoolean());
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
-    // drivebase.setDefaultCommand(closedAbsoluteDrive);  
-  } 
+    // drivebase.setDefaultCommand(closedAbsoluteDrive);
+  }
+
   public static final Pose2d convertToRedSide(Pose2d pose) {
     Optional<Alliance> alliance = DriverStation.getAlliance();
 
     return pose;
-}
+  }
+
   private void configureBindings() {
 
-    // driverPS5.R1().onTrue(new InstantCommand(drivebase::pointModulesForward , drivebase));
+    // driverPS5.R1().onTrue(new InstantCommand(drivebase::pointModulesForward ,
+    // drivebase));
     // // driverXbox.cross().onTrue(new InstantCommand(drivebase::lock, drivebase));
-    // driverPS5.square().onTrue(new InstantCommand(drivebase::zeroGyro, drivebase).ignoringDisable(true));
-    // driverPS5.povUp().onTrue(drivebase.driveToPose(new Pose2d(14, 5.48, new Rotation2d(Math.toRadians(0)))));
-    driverPS5.L2().whileTrue(drivebase.pathFindAndAutoCommand("Source Align").andThen(arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SOURCE)));
-    driverPS5.R2().whileTrue(drivebase.pathFindAndAutoCommand("AmpAlign").
-        andThen(arm.goToAmpPosition()
+    // driverPS5.square().onTrue(new InstantCommand(drivebase::zeroGyro,
+    // drivebase).ignoringDisable(true));
+    // driverPS5.povUp().onTrue(drivebase.driveToPose(new Pose2d(14, 5.48, new
+    // Rotation2d(Math.toRadians(0)))));
+    driverPS5.L2().whileTrue(drivebase.pathFindAndAutoCommand("Source Align").andThen(
+        arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SOURCE)
+            .andThen(Commands.waitUntil(() -> {
+              return arm.shouldMoveWristJoint() && arm.isAtPosition();
+            }).andThen(arm::intake).until(arm::isIntaked).handleInterrupt(arm::stopEverything))
+            )
+        );
+    driverPS5.R2().whileTrue(drivebase.pathFindAndAutoCommand("AmpAlign").andThen(arm.goToAmpPosition()
         .andThen(
-          Commands.waitUntil(() -> {
-            return arm.shouldMoveWristJoint() && arm.isAtPosition();
-          })
-          .andThen(arm.outtake()).withTimeout(1.5).andThen(arm.homeEverything())
-          .handleInterrupt(arm::stopEverythingMethod)
-        ))
-        .handleInterrupt(arm::stopEverythingMethod)
-      );  
+            Commands.waitUntil(() -> {
+              return arm.shouldMoveWristJoint() && arm.isAtPosition();
+            })
+                .andThen(arm.outtake().withTimeout(1.5)).andThen(arm.homeEverything())
+                .handleInterrupt(arm::stopEverythingMethod)))
+        .handleInterrupt(arm::stopEverythingMethod));
 
     driverPS5.circle().onTrue(arm.homeEverything());
     driverPS5.povDown().whileTrue(arm.intake()).onFalse(Commands.run(arm::stopEverything));
 
-
     // driverXbox.b().onTrue(
-    //   drivebase.getAutonomousCommand("Source", false).
-    //   andThen(getAutonomousCommand()).andThen(Commands.runOnce(drivebase::pointModulesForward, drivebase))
+    // drivebase.getAutonomousCommand("Source", false).
+    // andThen(getAutonomousCommand()).andThen(Commands.runOnce(drivebase::pointModulesForward,
+    // drivebase))
     // );
-    // driverXbox.povDown().onTrue(drivebase.driveToPose(new Pose2d(1.89, 7.67, new Rotation2d(Math.toRadians(90)))).
-    //                             andThen(arm.scoreAmp()));
-    // driverXbox.povUp().onTrue(drivebase.driveToPose(new Pose2d(15.47, 0.89, new Rotation2d(Math.toRadians(-60)))).
-    //                           andThen(arm.intake()).
-    //                           andThen(new WaitCommand(5)).
-    //                           andThen(arm.stopEverything()));
-
+    // driverXbox.povDown().onTrue(drivebase.driveToPose(new Pose2d(1.89, 7.67, new
+    // Rotation2d(Math.toRadians(90)))).
+    // andThen(arm.scoreAmp()));
+    // driverXbox.povUp().onTrue(drivebase.driveToPose(new Pose2d(15.47, 0.89, new
+    // Rotation2d(Math.toRadians(-60)))).
+    // andThen(arm.intake()).
+    // andThen(new WaitCommand(5)).
+    // andThen(arm.stopEverything()));
 
     oppsController.povDown().whileTrue(arm.intake()).onFalse(Commands.run(arm::stopEverything));
 
-    //amp position
-    //oppsController.x().onTrue(arm.moveWristTo(Constants.Aim.WRIST_ANGLE_AMP));
-    //oppsController.x().onTrue(arm.goToAmpPosition());
+    // amp position
+    // oppsController.x().onTrue(arm.moveWristTo(Constants.Aim.WRIST_ANGLE_AMP));
+    // oppsController.x().onTrue(arm.goToAmpPosition());
 
     oppsController.square().onTrue(arm.moveElevatorTo(-90));
-    
+
     oppsController.cross().onTrue(arm.shoot().andThen(new WaitCommand(2)).andThen(arm.stopEverything()));
     oppsController.povUp().whileTrue(arm.outtake()).onFalse(Commands.run(arm::stopEverything));
 
-    //retract everything but keep hovering
+    // retract everything but keep hovering
     oppsController.circle().onTrue(arm.homeEverything());
-    //move to source position
+    // move to source position
     oppsController.triangle().onTrue(arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SOURCE));
     oppsController.L1().whileTrue(climb.goDown().handleInterrupt(climb::stop));
     oppsController.R1().whileTrue(climb.goUp().handleInterrupt(climb::stop));
@@ -151,35 +167,38 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomousa
-    // return new InstantCommand(drivebase::pointModulesForward , drivebase).andThen(Commands.runOnce(() -> drivebase.drive(new Translation2d(3 , 0), 0, false),drivebase)
-    // .andThen(Commands.waitSeconds(2)).andThen(() -> drivebase.drive(new Translation2d(0, 0), 0, false)));
+    // return new InstantCommand(drivebase::pointModulesForward ,
+    // drivebase).andThen(Commands.runOnce(() -> drivebase.drive(new Translation2d(3
+    // , 0), 0, false),drivebase)
+    // .andThen(Commands.waitSeconds(2)).andThen(() -> drivebase.drive(new
+    // Translation2d(0, 0), 0, false)));
     return drivebase.getAutonomousCommand("AmpAmpApproach", false)
-      .andThen(Commands.waitUntil(() -> {
-        return arm.shouldMoveWristJoint() && arm.isAtPosition();
-      })
-      .andThen(arm.outtake()
-        .withTimeout(0.5)
-        .andThen(
-          Commands.parallel(
-              drivebase.getAutonomousCommand("AmpNotes", false),
-              arm.homeEverything()
-          )
-        )
-      
-    ));
+        .andThen(Commands.waitUntil(() -> {
+          return arm.shouldMoveWristJoint() && arm.isAtPosition();
+        })
+            .andThen(arm.outtake()
+                .withTimeout(0.5)
+                .andThen(
+                    Commands.parallel(
+                        drivebase.getAutonomousCommand("AmpLeave", false),
+                        arm.homeEverything()))
+
+            ));
   }
 
   public void setDriveMode() {
-    // drivebase.setDefaultCommand(); 
+    // drivebase.setDefaultCommand();
   }
 
   // 100% goon activated
   public void setMotorBrake(boolean brake) {
     drivebase.setMotorBrake(brake);
   }
+
   public VisionSubsystem getVisionSubsystem() {
     return visionSubsystem;
   }
+
   public SwerveSubsystem getDrivebase() {
     return drivebase;
   }
