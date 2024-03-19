@@ -63,14 +63,14 @@ public final class Constants
     public static final double WRIST_ANGLE_SPEAKER = HOME_POSITION; //asgfawieasfafeawefawefaergjuwGAWEFLIHAEGIUAHERGIAEHGAEIGUHAFJBASDJBADJFASDJLGHASDIFLAEIULAIWULHGIAUEHFKASDHFGJKADHG
     public static final double ELEVATOR_HEIGHT_AMP = -80.5;
     public static final double ELEVATOR_HEIGHT_SOURCE = -69;//aksefhawefhGPUIeqehrghquierghuieqrhghadfjkghkadghuishguhsekgjhsdjkfghadughauighlafklahawilawlegaagalalkgaelg
-    public static final double WRIST_SPEED = 0.65;
+    public static final double WRIST_SPEED = 0.85;
     public static final double SLOW_PRECISION_SPEED = -0.1;
   }
   public static final class AutonConstants
   {
 
     public static final PIDConstants TRANSLATION_PID = new PIDConstants(4, 0, 0);
-    public static final PIDConstants ANGLE_PID   = new PIDConstants(0.9, 0, 0.02);
+    public static final PIDConstants ANGLE_PID  = new PIDConstants(0.9, 0, 0.02);
   }
   public static final class Elevator {
     public static final double HOME_SPEED = 1;

@@ -30,7 +30,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   private DigitalInput limitSwitch = new DigitalInput(0);
 
-  private PIDController upWristPidController = new PIDController(0.135, 0, 0.00065);
+  private PIDController upWristPidController = new PIDController(0.135, 0, 0.0007);
   private PIDController downWristPidController = new PIDController(0.075, 0, 0.001);
 
   private PIDController elevatorPidController = new PIDController(0.027, 0.000, 0.003);
@@ -82,7 +82,7 @@ public class ArmSubsystem extends SubsystemBase {
             -Constants.Aim.WRIST_SPEED, Constants.Aim.WRIST_SPEED));
       } else {
         wrist.set(MathUtil.clamp(downWristPidController.calculate(wrist.getEncoder().getPosition()),
-                    -Constants.Aim.WRIST_SPEED / 3, Constants.Aim.WRIST_SPEED / 3));
+                    -Constants.Aim.WRIST_SPEED / 4, Constants.Aim.WRIST_SPEED / 4));
       }
 
       elevatorPidController.setSetpoint(elevatorPosition);
@@ -155,6 +155,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   public Command intake() {
     return Commands.run(() -> {
+      System.out.println("I AM CURRENTLY INTAKING!");
       lShooter.set(Constants.Intake.INTAKE_SPEEDS.SHOOTER_INTAKE_SPEED); // negative is clockwise
       lFeeder.set(Constants.Intake.INTAKE_SPEEDS.FEEDER_INTAKE_SPEED);
     }).handleInterrupt(this::stopEverythingMethod);

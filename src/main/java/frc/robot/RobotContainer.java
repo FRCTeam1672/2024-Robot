@@ -7,6 +7,8 @@ package frc.robot;
 import java.io.File;
 import java.util.Optional;
 
+import javax.sound.midi.Soundbank;
+
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
@@ -16,6 +18,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.ADXL345_I2C.AllAxes;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -65,17 +68,15 @@ public class RobotContainer {
 
     Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
         () -> {
-          return MathUtil.clamp(MathUtil.applyDeadband(driverPS5.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1, 1);
-          // if(DriverStation.getAlliance().isEmpty()) return 0;
-          // else if(DriverStation.getAlliance().get() == Alliance.Blue) return
-          // MathUtil.clamp(MathUtil.applyDeadband(-driverXbox.getLeftY(),
-          // OperatorConstants.LEFT_Y_DEADBAND), -1,1);
-          // else return MathUtil.clamp(MathUtil.applyDeadband(driverXbox.getLeftY(),
-          // OperatorConstants.LEFT_Y_DEADBAND), -1,1);
+          if(DriverStation.getAlliance().isEmpty()) return 0;
+          if(DriverStation.getAlliance().get() == Alliance.Red) return MathUtil.clamp(MathUtil.applyDeadband(driverPS5.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1, 1);
+          else return MathUtil.clamp(MathUtil.applyDeadband(-driverPS5.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1, 1);
         },
         () -> {
+          if(DriverStation.getAlliance().isEmpty()) return 0;
+          if(DriverStation.getAlliance().get() == Alliance.Red)           return MathUtil.clamp(MathUtil.applyDeadband(driverPS5.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1, 1);
+          else return MathUtil.clamp(MathUtil.applyDeadband(-driverPS5.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1, 1);
 
-          return MathUtil.clamp(MathUtil.applyDeadband(driverPS5.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1, 1);
           // if(DriverStation.getAlliance().isEmpty()) return 0;
           // else if(DriverStation.getAlliance().get() == Alliance.Blue) return
           // MathUtil.clamp(MathUtil.applyDeadband(-driverXbox.getLeftX(),
@@ -111,8 +112,9 @@ public class RobotContainer {
     driverPS5.L2().whileTrue(drivebase.pathFindAndAutoCommand("Source Align").andThen(
         arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SOURCE)
             .andThen(Commands.waitUntil(() -> {
-              return arm.shouldMoveWristJoint() && arm.isAtPosition();
-            }).andThen(arm::intake).until(arm::isIntaked).handleInterrupt(arm::stopEverything))
+              System.out.println("waiting!");
+              return arm.isAtPosition();
+            }).andThen(arm.intake().until(arm::isIntaked)).andThen(arm::stopEverything).handleInterrupt(arm::stopEverything))
             )
         );
     driverPS5.R2().whileTrue(drivebase.pathFindAndAutoCommand("AmpAlign").andThen(arm.goToAmpPosition()
@@ -120,7 +122,7 @@ public class RobotContainer {
             Commands.waitUntil(() -> {
               return arm.shouldMoveWristJoint() && arm.isAtPosition();
             })
-                .andThen(arm.outtake().withTimeout(1.5)).andThen(arm.homeEverything())
+                .andThen(arm.outtake().withTimeout(1)).andThen(arm.homeEverything())
                 .handleInterrupt(arm::stopEverythingMethod)))
         .handleInterrupt(arm::stopEverythingMethod));
 
@@ -147,7 +149,7 @@ public class RobotContainer {
     // oppsController.x().onTrue(arm.moveWristTo(Constants.Aim.WRIST_ANGLE_AMP));
     // oppsController.x().onTrue(arm.goToAmpPosition());
 
-    oppsController.square().onTrue(arm.moveElevatorTo(-90));
+    oppsController.square().onTrue(arm.goToAmpPosition());
 
     oppsController.cross().onTrue(arm.shoot().andThen(new WaitCommand(2)).andThen(arm.stopEverything()));
     oppsController.povUp().whileTrue(arm.outtake()).onFalse(Commands.run(arm::stopEverything));
