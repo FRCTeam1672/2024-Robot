@@ -114,7 +114,7 @@ public class RobotContainer {
             .andThen(Commands.waitUntil(() -> {
               System.out.println("waiting!");
               return arm.isAtPosition();
-            }).andThen(arm.intake().until(arm::isIntaked)).andThen(arm::stopEverything).handleInterrupt(arm::stopEverything))
+            }).andThen(arm::stopEverything).handleInterrupt(arm::stopEverything))
             )
         );
     driverPS5.R2().whileTrue(drivebase.pathFindAndAutoCommand("AmpAlign").andThen(arm.goToAmpPosition()
@@ -174,7 +174,7 @@ public class RobotContainer {
     // , 0), 0, false),drivebase)
     // .andThen(Commands.waitSeconds(2)).andThen(() -> drivebase.drive(new
     // Translation2d(0, 0), 0, false)));
-    return drivebase.getAutonomousCommand("AmpAmpApproach", false)
+    return drivebase.getAutonomousCommand("CenterAmpApproach", false)
         .andThen(Commands.waitUntil(() -> {
           return arm.shouldMoveWristJoint() && arm.isAtPosition();
         })
