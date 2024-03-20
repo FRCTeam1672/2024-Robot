@@ -125,7 +125,6 @@ public class RobotContainer {
                 .andThen(arm.outtake().withTimeout(1)).andThen(arm.homeEverything())
                 .handleInterrupt(arm::stopEverythingMethod)))
         .handleInterrupt(arm::stopEverythingMethod));
-
     driverPS5.circle().onTrue(arm.homeEverything());
     driverPS5.povDown().whileTrue(arm.intake()).onFalse(Commands.run(arm::stopEverything));
 
