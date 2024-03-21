@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.ADXL345_I2C.AllAxes;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -51,6 +52,9 @@ public class RobotContainer {
   private final VisionSubsystem visionSubsystem = new VisionSubsystem();
   private final ClimbSubsystem climb = new ClimbSubsystem();
 
+  private final SendableChooser<Command> stageOneAuto = new SendableChooser<>();
+  private final SendableChooser<Command> stageTwoAuto = new SendableChooser<>();
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -65,6 +69,17 @@ public class RobotContainer {
 
     // DoubleSupplier
     NamedCommands.registerCommand("scoreAmp", new ProxyCommand(arm.goToAmpPosition()));
+    stageOneAuto.addOption("Amp Side", drivebase.getAutonomousCommand("AmpAmpApproach", false).andThen(getScoreCommand()).asProxy());
+    stageOneAuto.addOption("Center Side", drivebase.getAutonomousCommand("CenterAmpApproach", false).andThen(getScoreCommand()).asProxy());
+    stageOneAuto.addOption("Source Side", drivebase.getAutonomousCommand("SourceAmpApproach", false).andThen(getScoreCommand()).asProxy());
+    stageOneAuto.setDefaultOption("Nothing", Commands.none());
+
+    stageTwoAuto.addOption("Leave", drivebase.getAutonomousCommand("AmpLeave", false).asProxy());
+    stageTwoAuto.addOption("Eliminate the Notes", drivebase.getAutonomousCommand("AmpNotes", false).asProxy());
+    stageTwoAuto.setDefaultOption("Nothing", Commands.none());
+
+    SmartDashboard.putData("Stage One Auto", stageOneAuto);
+    SmartDashboard.putData("Stage Two Auto", stageTwoAuto);
 
     Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
         () -> {
@@ -74,7 +89,7 @@ public class RobotContainer {
         },
         () -> {
           if(DriverStation.getAlliance().isEmpty()) return 0;
-          if(DriverStation.getAlliance().get() == Alliance.Red)           return MathUtil.clamp(MathUtil.applyDeadband(driverPS5.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1, 1);
+          if(DriverStation.getAlliance().get() == Alliance.Red) return MathUtil.clamp(MathUtil.applyDeadband(driverPS5.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1, 1);
           else return MathUtil.clamp(MathUtil.applyDeadband(-driverPS5.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1, 1);
 
           // if(DriverStation.getAlliance().isEmpty()) return 0;
@@ -94,12 +109,6 @@ public class RobotContainer {
     // drivebase.setDefaultCommand(closedAbsoluteDrive);
   }
 
-  public static final Pose2d convertToRedSide(Pose2d pose) {
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-
-    return pose;
-  }
-
   private void configureBindings() {
 
     // driverPS5.R1().onTrue(new InstantCommand(drivebase::pointModulesForward ,
@@ -112,7 +121,6 @@ public class RobotContainer {
     driverPS5.L2().whileTrue(drivebase.pathFindAndAutoCommand("Source Align").andThen(
         arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SOURCE)
             .andThen(Commands.waitUntil(() -> {
-              System.out.println("waiting!");
               return arm.isAtPosition();
             }).andThen(arm::stopEverything).handleInterrupt(arm::stopEverything))
             )
@@ -166,25 +174,22 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomousa
-    // return new InstantCommand(drivebase::pointModulesForward ,
-    // drivebase).andThen(Commands.runOnce(() -> drivebase.drive(new Translation2d(3
-    // , 0), 0, false),drivebase)
-    // .andThen(Commands.waitSeconds(2)).andThen(() -> drivebase.drive(new
-    // Translation2d(0, 0), 0, false)));
-    return drivebase.getAutonomousCommand("CenterAmpApproach", false)
-        .andThen(Commands.waitUntil(() -> {
+
+  public Command getScoreCommand() {
+    return Commands.waitUntil(() -> {
           return arm.shouldMoveWristJoint() && arm.isAtPosition();
-        })
-            .andThen(arm.outtake()
-                .withTimeout(0.5)
+        }).andThen(
+          arm.outtake().withTimeout(0.5)
+        );
+  }
+  public Command getAutonomousCommand() {
+    return stageOneAuto.getSelected()
                 .andThen(
                     Commands.parallel(
-                        drivebase.getAutonomousCommand("AmpLeave", false),
-                        arm.homeEverything()))
+                        stageTwoAuto.getSelected(),
+                        arm.homeEverything())
 
-            ));
+            );
   }
 
   public void setDriveMode() {

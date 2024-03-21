@@ -51,13 +51,11 @@ public class ClimbSubsystem extends SubsystemBase {
 
   public Command goUp() {
     return Commands.run(() -> {
+    if (lClimb.getEncoder().getPosition() < -170) {
+        lClimb.stopMotor();
+        return;
+      }
       lClimb.set(-1);
-    });
-  }
-
-  public Command smartUp() {
-    return Commands.runOnce(() -> {
-      climbPosition = 1000000000.0;
     });
   }
 
