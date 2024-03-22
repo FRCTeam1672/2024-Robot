@@ -66,15 +66,8 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("LElevator Speed", lElevator.get());
     SmartDashboard.putNumber("RElevator Speed", rElevator.get());
 
-    SmartDashboard.putBoolean("Ropes OK", !areRopesDetached());
     // always run the PID controller
     if (DriverStation.isEnabled()) {
-      if (areRopesDetached()) {
-        lElevator.stopMotor();
-        rElevator.stopMotor();
-        System.out.println("[WARNING] ROPES ARE DETACHED");
-        return;
-      }
       upWristPidController.setSetpoint(wristPosition);
       downWristPidController.setSetpoint(wristPosition);
       if (wristPosition != Constants.Aim.HOME_POSITION) {
@@ -98,10 +91,6 @@ public class ArmSubsystem extends SubsystemBase {
 
   public boolean shouldMoveWristJoint() {
     return MathUtil.isNear(elevatorPidController.getSetpoint(), lElevator.getEncoder().getPosition(), 6);
-  }
-
-  public boolean areRopesDetached() {
-    return Math.abs(lElevator.getEncoder().getPosition() - rElevator.getEncoder().getPosition()) >= 20;
   }
 
   // stop everything

@@ -10,6 +10,8 @@ import java.util.Optional;
 import javax.sound.midi.Soundbank;
 
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.commands.PathfindingCommand;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -60,15 +62,11 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the trigger bindings
-    configureBindings();
-    // Applies deadbands and inverts controls because joysticks
-    // are back-right positive while robot
-    // controls are front-left positive
-    // left stick controls translation
-    // right stick controls the angular velocity of the robot
-
-    // DoubleSupplier
     NamedCommands.registerCommand("scoreAmp", new ProxyCommand(arm.goToAmpPosition()));
+    PathfindingCommand.warmupCommand().schedule();
+    FollowPathCommand.warmupCommand().schedule();
+    configureBindings();
+
     stageOneAuto.addOption("Amp Side", drivebase.getAutonomousCommand("AmpAmpApproach", false).andThen(getScoreCommand()).asProxy());
     stageOneAuto.addOption("Center Side", drivebase.getAutonomousCommand("CenterAmpApproach", false).andThen(getScoreCommand()).asProxy());
     stageOneAuto.addOption("Source Side", drivebase.getAutonomousCommand("SourceAmpApproach", false).andThen(getScoreCommand()).asProxy());
@@ -136,25 +134,7 @@ public class RobotContainer {
     driverPS5.circle().onTrue(arm.homeEverything());
     driverPS5.povDown().whileTrue(arm.intake()).onFalse(Commands.run(arm::stopEverything));
 
-    // driverXbox.b().onTrue(
-    // drivebase.getAutonomousCommand("Source", false).
-    // andThen(getAutonomousCommand()).andThen(Commands.runOnce(drivebase::pointModulesForward,
-    // drivebase))
-    // );
-    // driverXbox.povDown().onTrue(drivebase.driveToPose(new Pose2d(1.89, 7.67, new
-    // Rotation2d(Math.toRadians(90)))).
-    // andThen(arm.scoreAmp()));
-    // driverXbox.povUp().onTrue(drivebase.driveToPose(new Pose2d(15.47, 0.89, new
-    // Rotation2d(Math.toRadians(-60)))).
-    // andThen(arm.intake()).
-    // andThen(new WaitCommand(5)).
-    // andThen(arm.stopEverything()));
-
     oppsController.povDown().whileTrue(arm.intake()).onFalse(Commands.run(arm::stopEverything));
-
-    // amp position
-    // oppsController.x().onTrue(arm.moveWristTo(Constants.Aim.WRIST_ANGLE_AMP));
-    // oppsController.x().onTrue(arm.goToAmpPosition());
 
     oppsController.square().onTrue(arm.goToAmpPosition());
 
