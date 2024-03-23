@@ -12,15 +12,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "scoreAmp"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "AmpLeave"
+            "pathName": "AmpJetSweep"
           }
         }
       ]
