@@ -173,7 +173,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command pathFindAndAutoCommand(String autoName) {
     PathPlannerPath path = PathPlannerPath.fromPathFile(autoName);
     PathConstraints constraints = new PathConstraints(
-        1, 2.0,
+        2, 3.0,
         swerveDrive.getMaximumAngularVelocity(), Units.degreesToRadians(720));
 
     return AutoBuilder.pathfindThenFollowPath(path, constraints);

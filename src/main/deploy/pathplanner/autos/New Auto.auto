@@ -8,7 +8,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CenterAmpApproach"
+            "pathName": "AmpAmpApproach"
           }
         },
         {
@@ -20,7 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "AmpLeave"
           }
         }
       ]
