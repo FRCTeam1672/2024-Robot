@@ -3,8 +3,8 @@
   "robotLength": 0.6858,
   "holonomicMode": true,
   "pathFolders": [
-    "Amp Approach",
-    "Amp Leave",
+    "Approach",
+    "Leave",
     "Source"
   ],
   "autoFolders": [],

@@ -8,6 +8,7 @@ import java.io.File;
 import java.util.Optional;
 
 import javax.sound.midi.Soundbank;
+import javax.swing.JList.DropLocation;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
@@ -66,14 +67,24 @@ public class RobotContainer {
     PathfindingCommand.warmupCommand().schedule();
     FollowPathCommand.warmupCommand().schedule();
     configureBindings();
+    Command ampSide1 = drivebase.getAutonomousCommand("AmpAmpApproach", false).andThen(getScoreCommand()).asProxy();
+    ampSide1.setName("AmpAmpApproach");
 
-    stageOneAuto.addOption("Amp Side", drivebase.getAutonomousCommand("AmpAmpApproach", false).andThen(getScoreCommand()).asProxy());
-    stageOneAuto.addOption("Center Side", drivebase.getAutonomousCommand("CenterAmpApproach", false).andThen(getScoreCommand()).asProxy());
-    stageOneAuto.addOption("Source Side", drivebase.getAutonomousCommand("SourceAmpApproach", false).andThen(getScoreCommand()).asProxy());
+        Command centerSide1 = drivebase.getAutonomousCommand("CenterAmpApproach", false).andThen(getScoreCommand()).asProxy();
+    ampSide1.setName("CenterAmpApproach");
+
+        Command soruceSide1 = drivebase.getAutonomousCommand("SourceAmpApproach", false).andThen(getScoreCommand()).asProxy();
+    ampSide1.setName("SourceAmpApproach");
+    stageOneAuto.addOption("Amp Side", ampSide1);
+    stageOneAuto.addOption("Center Side", centerSide1);
+    stageOneAuto.addOption("Source Side", soruceSide1);
     stageOneAuto.setDefaultOption("Nothing", Commands.none());
 
-    stageTwoAuto.addOption("Leave", drivebase.getAutonomousCommand("AmpLeave", false).asProxy());
-    stageTwoAuto.addOption("Eliminate the Notes", drivebase.getAutonomousCommand("AmpNotes", false).asProxy());
+    stageTwoAuto.addOption("Amp Leave", drivebase.getAutonomousCommand("AmpLeave", false).asProxy());
+    stageTwoAuto.addOption("Source Leave", drivebase.getAutonomousCommand("SourceLeave", false).asProxy());
+    stageTwoAuto.addOption("Eliminate the Notes (AMP)", drivebase.getAutonomousCommand("AmpJetSweep", false).asProxy());
+    stageTwoAuto.addOption("Eliminate the Notes (Source)", drivebase.getAutonomousCommand("SourceJetSweep", false).asProxy());
+
     stageTwoAuto.setDefaultOption("Nothing", Commands.none());
 
     SmartDashboard.putData("Stage One Auto", stageOneAuto);
@@ -132,6 +143,7 @@ public class RobotContainer {
                 .handleInterrupt(arm::stopEverythingMethod)))
         .handleInterrupt(arm::stopEverythingMethod));
     driverPS5.circle().onTrue(arm.homeEverything());
+    driverPS5.square().onTrue(new InstantCommand(drivebase::zeroGyro));
     driverPS5.povDown().whileTrue(arm.intake()).onFalse(Commands.run(arm::stopEverything));
 
     oppsController.povDown().whileTrue(arm.intake()).onFalse(Commands.run(arm::stopEverything));
@@ -149,13 +161,13 @@ public class RobotContainer {
     oppsController.R1().whileTrue(climb.goUp().handleInterrupt(climb::stop));
   }
 
-  /**
+  /**%
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
 
-  public Command getScoreCommand() {
+  public Command getScoreCommand() {  
     return Commands.waitUntil(() -> {
           return arm.shouldMoveWristJoint() && arm.isAtPosition();
         }).andThen(

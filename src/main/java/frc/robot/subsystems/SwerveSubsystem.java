@@ -86,6 +86,9 @@ public class SwerveSubsystem extends SubsystemBase {
     setupPathPlanner();
   }
 
+  public SwerveDrive getSwerveDrive() {
+    return swerveDrive;
+  }
   /**
    * Construct the swerve drive.
    *
