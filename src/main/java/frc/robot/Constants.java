@@ -58,7 +58,7 @@ public final class Constants
    * @param nothing its legit nothing dumbass
    */
   public static final class Aim {
-    public static final double HOME_POSITION = -2; 
+    public static final double HOME_POSITION = -3; 
     public static final double WRIST_ANGLE_AMP = -17;
     public static final double WRIST_ANGLE_SPEAKER = HOME_POSITION; //asgfawieasfafeawefawefaergjuwGAWEFLIHAEGIUAHERGIAEHGAEIGUHAFJBASDJBADJFASDJLGHASDIFLAEIULAIWULHGIAUEHFKASDHFGJKADHG
     public static final double ELEVATOR_HEIGHT_AMP = -80.5;
