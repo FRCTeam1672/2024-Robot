@@ -81,6 +81,8 @@ public class RobotContainer {
     stageOneAuto.setDefaultOption("Nothing", Commands.none());
 
     stageTwoAuto.addOption("Amp Leave", drivebase.getAutonomousCommand("AmpLeave", false).asProxy());
+    stageTwoAuto.addOption("Amp Leave to Source", drivebase.getAutonomousCommand("AmpLeaveSource", false).asProxy());
+
     stageTwoAuto.addOption("Source Leave", drivebase.getAutonomousCommand("SourceLeave", false).asProxy());
     stageTwoAuto.addOption("Eliminate the Notes (AMP)", drivebase.getAutonomousCommand("AmpJetSweep", false).asProxy());
     stageTwoAuto.addOption("Eliminate the Notes (Source)", drivebase.getAutonomousCommand("SourceJetSweep", false).asProxy());
