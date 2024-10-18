@@ -101,21 +101,21 @@ public class RobotContainer {
           if (DriverStation.getAlliance().isEmpty())
             return 0;
           if (DriverStation.getAlliance().get() == Alliance.Red)
-            return MathUtil.clamp(MathUtil.applyDeadband(driverPS5.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1,
-                1);
+            return MathUtil.clamp(MathUtil.applyDeadband(driverPS5.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -0.75,
+                0.75);
           else
-            return MathUtil.clamp(MathUtil.applyDeadband(-driverPS5.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -1,
-                1);
+            return MathUtil.clamp(MathUtil.applyDeadband(-driverPS5.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -0.75,
+                0.75);
         },
         () -> {
           if (DriverStation.getAlliance().isEmpty())
             return 0;
           if (DriverStation.getAlliance().get() == Alliance.Red)
-            return MathUtil.clamp(MathUtil.applyDeadband(driverPS5.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1,
-                1);
+            return MathUtil.clamp(MathUtil.applyDeadband(driverPS5.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -0.75,
+                0.75);
           else
-            return MathUtil.clamp(MathUtil.applyDeadband(-driverPS5.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -1,
-                1);
+            return MathUtil.clamp(MathUtil.applyDeadband(-driverPS5.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -0.75,
+                0.75);
 
           // if(DriverStation.getAlliance().isEmpty()) return 0;
           // else if(DriverStation.getAlliance().get() == Alliance.Blue) return
@@ -126,7 +126,7 @@ public class RobotContainer {
 
         },
         () -> {
-          return driverPS5.getRightX();
+          return MathUtil.clamp(driverPS5.getRightX(), -0.75, 0.75);
         },
         () -> driverPS5.R1().getAsBoolean());
 
@@ -143,17 +143,17 @@ public class RobotContainer {
     // drivebase).ignoringDisable(true));
     // driverPS5.povUp().onTrue(drivebase.driveToPose(new Pose2d(14, 5.48, new
     // Rotation2d(Math.toRadians(0)))));
-    driverPS5.L2().whileTrue(drivebase.pathFindAndAutoCommand("Source Align").andThen(
-        arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SOURCE)
-            .andThen(Commands.waitUntil(() -> {
-              return arm.isAtPosition();
-            }).andThen(
-              Commands.deadline(
-                Commands.waitSeconds(1).andThen(Commands.waitUntil(arm::isIntaked)),
-                arm.intake()
-              )
-            ).andThen(arm.stopEverything().andThen(arm.homeEverything()))
-            )));
+    // driverPS5.L2().whileTrue(drivebase.pathFindAndAutoCommand("Source Align").andThen(
+    //     arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SOURCE)
+    //         .andThen(Commands.waitUntil(() -> {
+    //           return arm.isAtPosition();
+    //         }).andThen(
+    //           Commands.deadline(
+    //             Commands.waitSeconds(1).andThen(Commands.waitUntil(arm::isIntaked)),
+    //             arm.intake()
+    //           )
+    //         ).andThen(arm.stopEverything().andThen(arm.homeEverything()))
+    //         )));
     driverPS5.R2().whileTrue(drivebase.pathFindAndAutoCommand("AmpAlign").andThen(arm.goToAmpPosition()
         .andThen(
             Commands.waitUntil(() -> {
@@ -171,12 +171,12 @@ public class RobotContainer {
     oppsController.square().onTrue(arm.goToAmpPosition());
 
     oppsController.cross().onTrue(arm.shoot().andThen(new WaitCommand(2)).andThen(arm.stopEverything()));
-    oppsController.povUp().whileTrue(arm.outtake()).onFalse(Commands.run(arm::stopEverything));
+    driverPS5.povUp().whileTrue(arm.outtake()).onFalse(Commands.run(arm::stopEverything));
 
     // retract everything but keep hovering
     oppsController.circle().onTrue(arm.homeEverything());
     // move to source position
-    oppsController.triangle().onTrue(arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SOURCE));
+    driverPS5.triangle().onTrue(arm.moveElevatorTo(Constants.Aim.ELEVATOR_HEIGHT_SOURCE));
     oppsController.L1().whileTrue(climb.goDown().handleInterrupt(climb::stop));
     oppsController.R1().whileTrue(climb.goUp().handleInterrupt(climb::stop));
   }

@@ -199,7 +199,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public Command homeEverything() {
-    return moveWristTo(Constants.Aim.HOME_POSITION).andThen(moveElevatorTo(Constants.Aim.HOME_POSITION));
+    return moveElevatorTo(Constants.Aim.HOME_POSITION).andThen(moveWristTo(Constants.Aim.HOME_POSITION));
   }
 
   public Command outtake() {

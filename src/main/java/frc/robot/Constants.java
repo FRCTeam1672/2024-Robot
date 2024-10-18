@@ -77,7 +77,7 @@ public final class Constants
     public static final PIDConstants ANGLE_PID  = new PIDConstants(0.9, 0, 0.02);
   }
   public static final class Elevator {
-    public static final double HOME_SPEED = 1;
+    public static final double HOME_SPEED = 0.3;
   }
 
   public static final class OperatorConstants
